@@ -45,7 +45,6 @@ export default function GoogleSignInButton({ setIsVerifying }: ButtonProps) {
       setIsVerifying(false);
     } catch (error) {
       console.error("Error signing in with Google:", error);
-      await deleteUser(user);
       await signOut(auth);
       router.push("/access-denied");
     }
