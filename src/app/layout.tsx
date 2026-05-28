@@ -18,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body  className="relative min-h-screen w-full flex flex-col items-center justify-center isolation-auto
-            before:absolute before:inset-0 before:-z-10 before:opacity-[0.08]
+            before:absolute before:inset-0 before:-z-10 before:opacity-5
             before:bg-[url('/hospital.png')] before:bg-cover before:bg-center before:bg-no-repeat">
         <ApolloGraphQLProvider>{children}</ApolloGraphQLProvider>
       </body>
