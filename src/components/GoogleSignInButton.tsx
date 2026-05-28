@@ -1,19 +1,53 @@
-// components/GoogleSignInButton.tsx
 "use client";
 
-import { signInWithPopup } from "firebase/auth";
+import { deleteUser, signInWithPopup, signOut } from "firebase/auth";
 import { auth, googleProvider } from "@/lib/firebase";
-import Image from "next/image";
+import { useApolloClient } from "@apollo/client/react";
 
-export default function GoogleSignInButton() {
+import { GetMeQuery } from "@/__generated__/graphql";
+import { GET_ME } from "@/graphql/queries/getMe";
+import { useRouter } from "next/navigation";
+
+interface ButtonProps {
+  setIsVerifying: (value: boolean) => void;
+}
+
+export default function GoogleSignInButton({ setIsVerifying }: ButtonProps) {
+  const apolloClient = useApolloClient();
+  const router = useRouter();
+
   const handleGoogleSignIn = async () => {
+    const result = await signInWithPopup(auth, googleProvider);
+    const { user } = result;
+    const token = await user.getIdToken();
+    
     try {
-      const result = await signInWithPopup(auth, googleProvider);
-      // The signed-in user info
-      const user = result.user;
-      console.log("Successfully logged in:", user.displayName);
+      setIsVerifying(true);
+
+      const { data } = await apolloClient.query<GetMeQuery>({
+        query: GET_ME,
+        fetchPolicy: "network-only",
+        context: {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      });
+
+      if (!data || !data.getMe) {
+        await deleteUser(user);
+        await signOut(auth);
+        alert("Access Denied: Unregistered account.");
+        setIsVerifying(false);
+        router.push("/access-denied");
+        return;
+      }
+
+      console.log(`Verified Clinic Account: ${data.getMe.firstName}`);
+      setIsVerifying(false);
     } catch (error) {
       console.error("Error signing in with Google:", error);
+      await deleteUser(user);
+      await signOut(auth);
+      router.push("/access-denied");
     }
   };
 
