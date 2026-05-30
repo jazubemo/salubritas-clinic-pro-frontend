@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import ApolloGraphQLProvider from "@/providers/ApolloGraphQLProvider";
-
-const inter = Inter({ subsets: ["latin"] });
+import Image from "next/image";
+import globalBackground from "../../public/generalBackground.jpg";
 
 export const metadata: Metadata = {
   title: "Salubritas Clinic Pro",
@@ -17,9 +16,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body  className="relative min-h-screen w-full flex flex-col items-center justify-center isolation-auto
-            before:absolute before:inset-0 before:-z-10 before:opacity-5
-            before:bg-[url('/hospital.png')] before:bg-cover before:bg-center before:bg-no-repeat">
+      <body className="min-h-screen w-full flex flex-col items-center justify-center relative bg-slate-950 text-slate-900 antialiased overflow-x-hidden">
+        <div className="absolute inset-0 z-0 pointer-events-none select-none">
+          <Image
+            src={globalBackground}
+            alt="Salubritas App Background"
+            fill
+            priority
+            className="object-cover object-[25%_center] brightness-90 transition-all duration-300"
+          />
+        </div>
+        
         <ApolloGraphQLProvider>{children}</ApolloGraphQLProvider>
       </body>
     </html>

@@ -14,11 +14,11 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Learn more about it here: https://the-guild.dev/graphql/codegen/plugins/presets/preset-client#reducing-bundle-size
  */
 type Documents = {
-    "\n  query GetMe {\n    getMe {\n      _id\n      authId\n      firstName\n      lastName\n    }\n  }\n": typeof types.GetMeDocument,
+    "\n  query GetMe {\n    getMe {\n      _id\n      authId\n      clinicRoles\n      dni\n      email\n      firstName\n      lastName\n      status\n    }\n  }\n": typeof types.GetMeDocument,
     "\n  query Query($activeClinicId: String!) {\n    getUsers(activeClinicId: $activeClinicId) {\n      _id\n      authId\n      dni\n      firstName\n      lastName\n    }\n  }\n": typeof types.QueryDocument,
 };
 const documents: Documents = {
-    "\n  query GetMe {\n    getMe {\n      _id\n      authId\n      firstName\n      lastName\n    }\n  }\n": types.GetMeDocument,
+    "\n  query GetMe {\n    getMe {\n      _id\n      authId\n      clinicRoles\n      dni\n      email\n      firstName\n      lastName\n      status\n    }\n  }\n": types.GetMeDocument,
     "\n  query Query($activeClinicId: String!) {\n    getUsers(activeClinicId: $activeClinicId) {\n      _id\n      authId\n      dni\n      firstName\n      lastName\n    }\n  }\n": types.QueryDocument,
 };
 
@@ -39,7 +39,7 @@ export function graphql(source: string): unknown;
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query GetMe {\n    getMe {\n      _id\n      authId\n      firstName\n      lastName\n    }\n  }\n"): (typeof documents)["\n  query GetMe {\n    getMe {\n      _id\n      authId\n      firstName\n      lastName\n    }\n  }\n"];
+export function graphql(source: "\n  query GetMe {\n    getMe {\n      _id\n      authId\n      clinicRoles\n      dni\n      email\n      firstName\n      lastName\n      status\n    }\n  }\n"): (typeof documents)["\n  query GetMe {\n    getMe {\n      _id\n      authId\n      clinicRoles\n      dni\n      email\n      firstName\n      lastName\n      status\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

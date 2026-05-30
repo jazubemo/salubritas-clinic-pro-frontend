@@ -24,7 +24,7 @@ export default function GoogleSignInButton({ setIsVerifying }: ButtonProps) {
     try {
       setIsVerifying(true);
 
-      const { data } = await apolloClient.query<GetMeQuery>({
+      const { data, error: gqlError } = await apolloClient.query<GetMeQuery>({
         query: GET_ME,
         fetchPolicy: "network-only",
         context: {
@@ -32,10 +32,9 @@ export default function GoogleSignInButton({ setIsVerifying }: ButtonProps) {
         },
       });
 
-      if (!data || !data.getMe) {
+      if (!data || !data.getMe || gqlError) {
         await deleteUser(user);
         await signOut(auth);
-        alert("Access Denied: Unregistered account.");
         setIsVerifying(false);
         router.push("/access-denied");
         return;
@@ -53,7 +52,7 @@ export default function GoogleSignInButton({ setIsVerifying }: ButtonProps) {
   return (
     <button
       onClick={handleGoogleSignIn}
-      className="flex items-center gap-2 px-4 py-2 border rounded-lg shadow-sm hover:bg-gray-50"
+      className="flex items-center gap-2 px-4 py-2 border rounded-lg shadow-sm hover:bg-gray-50 text-sm font-medium text-gray-700"
     >
       <img src="/google.svg" alt="Google logo" className="w-5 h-5" />
       <span>Sign in with Google</span>

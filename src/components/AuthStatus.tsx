@@ -28,7 +28,7 @@ export default function AuthStatus() {
   }
 
   return (
-    <div className="p-4">
+    <div className="w-full flex justify-center">
       {user && !isVerifying ? (
         <div>
           <p>Welcome, {user.displayName}!</p>
