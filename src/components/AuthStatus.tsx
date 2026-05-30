@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useEffect, useState } from "react";
 import { onAuthStateChanged, signOut, User } from "firebase/auth";
@@ -18,7 +18,7 @@ export default function AuthStatus() {
     return () => unsubscribe();
   }, []);
 
-    if (loading || isVerifying) {
+  if (loading || isVerifying) {
     return (
       <div className="flex flex-col items-center gap-2">
         <div className="h-6 w-6 animate-spin rounded-full border-2 border-blue-600 border-t-transparent" />
@@ -28,20 +28,35 @@ export default function AuthStatus() {
   }
 
   return (
-    <div className="w-full flex justify-center">
-      {user && !isVerifying ? (
-        <div>
-          <p>Welcome, {user.displayName}!</p>
-          <button 
-            onClick={() => signOut(auth)}
-            className="mt-2 text-sm text-red-500 underline"
-          >
-            Sign Out
-          </button>
-        </div>
-      ) : (
-        <GoogleSignInButton setIsVerifying={setIsVerifying} />
-      )}
+    <div
+      style={{
+        width: "100%",
+        display: "flex",
+        justifyContent: "center",
+        textAlign: "center",
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        {user && !isVerifying ? (
+          <>
+            <p>Welcome, {user.displayName}!</p>
+            <button
+              onClick={() => signOut(auth)}
+              className="mt-2 text-sm text-red-500 underline"
+            >
+              Sign Out
+            </button>
+          </>
+        ) : (
+          <GoogleSignInButton setIsVerifying={setIsVerifying} />
+        )}
+      </div>
     </div>
   );
 }

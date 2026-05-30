@@ -20,7 +20,7 @@ export default function GoogleSignInButton({ setIsVerifying }: ButtonProps) {
     const result = await signInWithPopup(auth, googleProvider);
     const { user } = result;
     const token = await user.getIdToken();
-    
+
     try {
       setIsVerifying(true);
 
@@ -35,8 +35,7 @@ export default function GoogleSignInButton({ setIsVerifying }: ButtonProps) {
       if (!data || !data.getMe || gqlError) {
         await deleteUser(user);
         await signOut(auth);
-        setIsVerifying(false);
-        router.push("/access-denied");
+        router.replace("/access-denied");
         return;
       }
 
@@ -45,17 +44,19 @@ export default function GoogleSignInButton({ setIsVerifying }: ButtonProps) {
     } catch (error) {
       console.error("Error signing in with Google:", error);
       await signOut(auth);
-      router.push("/access-denied");
+      router.replace("/access-denied");
     }
   };
 
   return (
-    <button
-      onClick={handleGoogleSignIn}
-      className="flex items-center gap-2 px-4 py-2 border rounded-lg shadow-sm hover:bg-gray-50 text-sm font-medium text-gray-700"
-    >
-      <img src="/google.svg" alt="Google logo" className="w-5 h-5" />
-      <span>Sign in with Google</span>
-    </button>
+    <div className="w-auto flex justify-center items-center px-4">
+      <button
+        onClick={handleGoogleSignIn}
+        className="flex items-center gap-2 px-4 py-2 border rounded-lg shadow-sm hover:bg-gray-50"
+      >
+        <img src="/google.svg" alt="Google logo" className="w-5 h-5" />
+        <span>Sign in with Google</span>
+      </button>
+    </div>
   );
 }

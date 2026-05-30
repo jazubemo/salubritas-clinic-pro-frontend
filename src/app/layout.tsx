@@ -23,9 +23,10 @@ export default function RootLayout({
             alt="Salubritas App Background"
             fill
             priority
-            className="object-cover object-[25%_center] brightness-90 transition-all duration-300"
+            className="object-cover object-[25%_center] brightness-90"
           />
         </div>
+        <div className="absolute inset-0 bg-black/50 z-10" />
         
         <ApolloGraphQLProvider>{children}</ApolloGraphQLProvider>
       </body>
