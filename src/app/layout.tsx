@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import ApolloGraphQLProvider from "@/providers/ApolloGraphQLProvider";
 import Image from "next/image";
 import globalBackground from "../../public/generalBackground.jpg";
+
+import ApolloGraphQLProvider from "@/providers/ApolloGraphQLProvider";
+import StoreProvider from './../providers/StoreProvider'
 
 export const metadata: Metadata = {
   title: "Salubritas Clinic Pro",
@@ -27,8 +29,10 @@ export default function RootLayout({
           />
         </div>
         <div className="absolute inset-0 bg-black/50 z-10" />
-        
-        <ApolloGraphQLProvider>{children}</ApolloGraphQLProvider>
+
+        <ApolloGraphQLProvider>
+          <StoreProvider>{children}</StoreProvider>
+        </ApolloGraphQLProvider>
       </body>
     </html>
   );
