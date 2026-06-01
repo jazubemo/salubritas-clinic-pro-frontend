@@ -5,7 +5,7 @@ import globalBackground from "../../public/generalBackground.jpg";
 
 import ApolloGraphQLProvider from "@/providers/ApolloGraphQLProvider";
 import StoreProvider from './../providers/StoreProvider'
-import FirebaseAuthProvider from "@/providers/FirebaseAuthProviders";
+import FirebaseAuthProvider from "@/providers/FirebaseAuthProvider";
 import ProtectedRouteGuard from "@/providers/ProtectRouteGuard";
 
 export const metadata: Metadata = {
