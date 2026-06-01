@@ -1,30 +1,27 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { onAuthStateChanged, signOut, User } from "firebase/auth";
-import { auth } from "@/lib/firebase";
 import GoogleSignInButton from "./GoogleSignInButton";
+import Loader from "./Loader";
+import { useAppSelector } from "@/lib/store";
+import { usePathname, useRouter } from "next/navigation";
 
 export default function AuthStatus() {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+  const router = useRouter();
+  const pathname = usePathname();
+
   const [isVerifying, setIsVerifying] = useState(false);
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-      setLoading(false);
-    });
-    return () => unsubscribe();
-  }, []);
+    if (isAuthenticated && pathname === "/sign-in") {
+      router.replace("/select-clinic");
+    }
+  }, [isAuthenticated, pathname, router]);
 
-  if (loading || isVerifying) {
-    return (
-      <div className="flex flex-col items-center gap-2">
-        <div className="h-6 w-6 animate-spin rounded-full border-2 border-blue-600 border-t-transparent" />
-        <p className="text-sm text-gray-500">Verifying clinic credentials...</p>
-      </div>
-    );
+
+  if (isVerifying) {
+    return <Loader message="Verifying clinic credentials..." />;
   }
 
   return (
@@ -43,19 +40,7 @@ export default function AuthStatus() {
           alignItems: "center",
         }}
       >
-        {user && !isVerifying ? (
-          <>
-            <p>Welcome, {user.displayName}!</p>
-            <button
-              onClick={() => signOut(auth)}
-              className="mt-2 text-sm text-red-500 underline"
-            >
-              Sign Out
-            </button>
-          </>
-        ) : (
-          <GoogleSignInButton setIsVerifying={setIsVerifying} />
-        )}
+        <GoogleSignInButton setIsVerifying={setIsVerifying} />
       </div>
     </div>
   );

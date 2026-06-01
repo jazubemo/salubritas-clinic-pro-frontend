@@ -2,13 +2,17 @@
 
 import { deleteUser, signInWithPopup, signOut } from "firebase/auth";
 import { auth, googleProvider } from "@/lib/firebase";
+
 import { useApolloClient } from "@apollo/client/react";
+import { useRouter } from "next/navigation";
+import { useAppDispatch } from "@/lib/store";
+
+import { setCredentials } from "@/lib/features/auth/authSlice";
 
 import { GetMeQuery } from "@/__generated__/graphql";
 import { GET_ME } from "@/graphql/queries/getMe";
-import { useRouter } from "next/navigation";
-import { useAppDispatch } from "@/lib/store";
-import { setCredentials } from "@/lib/features/auth/authSlice";
+
+import Image from "next/image";
 
 interface ButtonProps {
   setIsVerifying: (value: boolean) => void;
@@ -45,8 +49,7 @@ export default function GoogleSignInButton({ setIsVerifying }: ButtonProps) {
       //store in redux
       dispatch(setCredentials(data.getMe));
 
-      console.log(`Verified Clinic Account: ${data.getMe.firstName}`);
-      setIsVerifying(false);
+      router.replace("/select-clinic");
     } catch (error) {
       console.error("Error signing in with Google:", error);
       await signOut(auth);
@@ -60,7 +63,13 @@ export default function GoogleSignInButton({ setIsVerifying }: ButtonProps) {
         onClick={handleGoogleSignIn}
         className="flex items-center gap-2 px-4 py-2 border rounded-lg shadow-sm hover:bg-gray-50"
       >
-        <img src="/google.svg" alt="Google logo" className="w-5 h-5" />
+        <Image
+          src="/google.svg"
+          alt="Google logo"
+          className="w-5 h-5"
+          width={24}
+          height={24}
+        />
         <span>Sign in with Google</span>
       </button>
     </div>

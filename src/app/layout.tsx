@@ -6,6 +6,7 @@ import globalBackground from "../../public/generalBackground.jpg";
 import ApolloGraphQLProvider from "@/providers/ApolloGraphQLProvider";
 import StoreProvider from './../providers/StoreProvider'
 import FirebaseAuthProvider from "@/providers/FirebaseAuthProviders";
+import ProtectedRouteGuard from "@/providers/ProtectRouteGuard";
 
 export const metadata: Metadata = {
   title: "Salubritas Clinic Pro",
@@ -34,7 +35,9 @@ export default function RootLayout({
         <ApolloGraphQLProvider>
           <StoreProvider>
             <FirebaseAuthProvider>
-              {children}
+              <ProtectedRouteGuard>
+                {children}
+              </ProtectedRouteGuard>
             </FirebaseAuthProvider>
           </StoreProvider>
         </ApolloGraphQLProvider>

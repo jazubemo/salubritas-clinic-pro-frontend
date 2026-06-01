@@ -4,9 +4,12 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { useAppDispatch } from "@/lib/store";
 import { setCredentials, logOut } from "@/lib/features/auth/authSlice";
+
 import { GET_ME } from "@/graphql/queries/getMe";
-import { useLazyQuery } from "@apollo/client/react";
 import { GetMeQuery } from "@/__generated__/graphql";
+import { useLazyQuery } from "@apollo/client/react";
+
+import Loader from "@/components/Loader";
 
 export default function FirebaseAuthProvider({
   children,
@@ -24,10 +27,8 @@ export default function FirebaseAuthProvider({
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
         try {
-          const token = await firebaseUser.getIdToken();
-
           const { data } = await fetchDbUser();
-
+          
           if (data?.getMe) {
             dispatch(setCredentials(data.getMe));
           }
@@ -45,11 +46,7 @@ export default function FirebaseAuthProvider({
   }, [dispatch, fetchDbUser]);
 
   if (loadingSession) {
-    return (
-      <div style={{ display: "grid", placeItems: "center", height: "100vh" }}>
-        <p>Loading session...</p>
-      </div>
-    );
+    return <Loader message="Verifying security session..." fullPage={true} />;
   }
 
   return <>{children}</>;
