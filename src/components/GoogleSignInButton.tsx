@@ -7,12 +7,15 @@ import { useApolloClient } from "@apollo/client/react";
 import { GetMeQuery } from "@/__generated__/graphql";
 import { GET_ME } from "@/graphql/queries/getMe";
 import { useRouter } from "next/navigation";
+import { useAppDispatch } from "@/lib/store";
+import { setCredentials } from "@/lib/features/auth/authSlice";
 
 interface ButtonProps {
   setIsVerifying: (value: boolean) => void;
 }
 
 export default function GoogleSignInButton({ setIsVerifying }: ButtonProps) {
+  const dispatch = useAppDispatch();
   const apolloClient = useApolloClient();
   const router = useRouter();
 
@@ -38,6 +41,9 @@ export default function GoogleSignInButton({ setIsVerifying }: ButtonProps) {
         router.replace("/access-denied");
         return;
       }
+
+      //store in redux
+      dispatch(setCredentials(data.getMe));
 
       console.log(`Verified Clinic Account: ${data.getMe.firstName}`);
       setIsVerifying(false);
