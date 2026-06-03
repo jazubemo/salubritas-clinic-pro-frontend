@@ -61,7 +61,7 @@ export default function GoogleSignInButton({ setIsVerifying }: ButtonProps) {
     <div className="w-auto flex justify-center items-center px-4">
       <button
         onClick={handleGoogleSignIn}
-        className="flex items-center gap-2 px-4 py-2 border rounded-lg shadow-sm hover:bg-gray-50"
+        className="flex items-center gap-2 px-4 py-2 border rounded-lg shadow-sm hover:bg-gray-50 cursor-pointer"
       >
         <Image
           src="/google.svg"

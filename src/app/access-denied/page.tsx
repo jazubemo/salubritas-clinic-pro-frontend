@@ -32,7 +32,7 @@ export default function AccessDeniedPage() {
       </p>
 
       <Link href="/sign-in" passHref className="w-full sm:w-auto">
-        <button className="w-full sm:w-48 py-3 px-4 bg-slate-900 text-white rounded-xl font-semibold hover:bg-slate-800 transition-colors shadow-sm">
+        <button className="w-full sm:w-48 py-3 px-4 bg-slate-900 text-white rounded-xl font-semibold hover:bg-slate-800 transition-colors shadow-sm cursor-pointer">
           Return to Sign In
         </button>
       </Link>
