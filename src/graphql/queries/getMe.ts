@@ -5,11 +5,16 @@ export const GET_ME = gql`
     getMe {
       _id
       authId
-      clinicMemberships
       dni
       email
       firstName
       lastName
+      clinicMemberships {
+        name
+        roles
+        status
+        clinicId
+      }
     }
   }
 `;

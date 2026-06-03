@@ -1,6 +1,6 @@
 "use client";
 
-import LogoBadge from "./LogoBadge";
+import LogoBadge from "./AppLogo";
 
 interface LoaderProps {
   message?: string;
@@ -18,13 +18,6 @@ export default function Loader({ message = "Verifying clinic credentials...", fu
       <div className="w-[450px] max-w-[90%] bg-white rounded-2xl shadow-2xl p-10 flex flex-col items-center text-center gap-6 border border-slate-100">
         
         <LogoBadge />
-
-        <div>
-          <h2 className="text-xl font-bold text-slate-800 tracking-tight">
-            Salubritas Clinic Pro
-          </h2>
-        </div>
-
 
         <div className="relative my-2 flex items-center justify-center">
           <div className="h-10 w-10 animate-spin rounded-full border-4 border-slate-100 border-t-indigo-600" />
