@@ -1,6 +1,6 @@
-import AppLogo from "@/components/AppLogo";
-import { SubHeading } from "@/components/SubHeading";
-import WelcomeActions from "@/components/WelcomeActions";
+import AppLogo from "@/components/common/AppLogo";
+import { SubHeading } from "@/components/common/SubHeading";
+import WelcomeActions from "@/components/welcome/WelcomeActions";
 
 export default function Home() {
   return (

@@ -1,6 +1,6 @@
 "use client";
 
-import LogoBadge from "./AppLogo";
+import LogoBadge from "./../common/AppLogo";
 
 interface LoaderProps {
   message?: string;

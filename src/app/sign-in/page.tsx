@@ -4,10 +4,10 @@ import { useEffect, useState } from "react";
 import { useAppSelector } from "@/lib/store";
 import { usePathname, useRouter } from "next/navigation";
 
-import LogoBadge from "@/components/AppLogo";
-import Loader from "@/components/Loader";
-import GoogleSignInButton from "@/components/GoogleSignInButton";
-import { SubHeading } from "@/components/SubHeading";
+import LogoBadge from "@/components/common/AppLogo";
+import Loader from "@/components/common/Loader";
+import GoogleSignInButton from "@/components/auth/GoogleSignInButton";
+import { SubHeading } from "@/components/common/SubHeading";
 
 export default function SignInPage() {
   const router = useRouter();

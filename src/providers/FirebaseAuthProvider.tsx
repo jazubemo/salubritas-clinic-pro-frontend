@@ -9,7 +9,7 @@ import { GET_ME } from "@/graphql/queries/getMe";
 import { GetMeQuery } from "@/__generated__/graphql";
 import { useLazyQuery } from "@apollo/client/react";
 
-import Loader from "@/components/Loader";
+import Loader from "@/components/common/Loader";
 
 export default function FirebaseAuthProvider({
   children,

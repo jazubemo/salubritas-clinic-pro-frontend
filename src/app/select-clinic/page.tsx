@@ -1,6 +1,6 @@
-import ClinicCardContainer from "@/components/ClinicCardContainer";
-import LogoBadge from "@/components/AppLogo";
-import SignOutButton from "@/components/SignOutButton";
+import ClinicCardContainer from "@/components/clinic/ClinicCardContainer";
+import LogoBadge from "@/components/common/AppLogo";
+import SignOutButton from "@/components/auth/SignOutButton";
 
 export default function SelectClinicPage() {
   return (
