@@ -3,7 +3,7 @@
 import React, { useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useAppSelector } from "@/lib/store";
-import Loader from "@/components/Loader";
+import Loader from "@/components/common/Loader";
 
 export default function ProtectedRouteGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter();
