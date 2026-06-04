@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '@/config/AuthContext';
 
-// 1. Define the interface for the medical data you expect from NestJS
 interface User {
   _id: string;
   name: string;
@@ -27,7 +26,6 @@ export function UserComponent() {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          // 2. Attach the token securely in the Authorization header
           'Authorization': `Bearer ${token}`,
         },
       });

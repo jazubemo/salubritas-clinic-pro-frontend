@@ -2,17 +2,24 @@
 
 import { deleteUser, signInWithPopup, signOut } from "firebase/auth";
 import { auth, googleProvider } from "@/lib/firebase";
+
 import { useApolloClient } from "@apollo/client/react";
+import { useRouter } from "next/navigation";
+import { useAppDispatch } from "@/lib/store";
+
+import { setCredentials } from "@/lib/features/auth/authSlice";
 
 import { GetMeQuery } from "@/__generated__/graphql";
 import { GET_ME } from "@/graphql/queries/getMe";
-import { useRouter } from "next/navigation";
+
+import Image from "next/image";
 
 interface ButtonProps {
   setIsVerifying: (value: boolean) => void;
 }
 
 export default function GoogleSignInButton({ setIsVerifying }: ButtonProps) {
+  const dispatch = useAppDispatch();
   const apolloClient = useApolloClient();
   const router = useRouter();
 
@@ -20,11 +27,11 @@ export default function GoogleSignInButton({ setIsVerifying }: ButtonProps) {
     const result = await signInWithPopup(auth, googleProvider);
     const { user } = result;
     const token = await user.getIdToken();
-    
+
     try {
       setIsVerifying(true);
 
-      const { data } = await apolloClient.query<GetMeQuery>({
+      const { data, error: gqlError } = await apolloClient.query<GetMeQuery>({
         query: GET_ME,
         fetchPolicy: "network-only",
         context: {
@@ -32,32 +39,39 @@ export default function GoogleSignInButton({ setIsVerifying }: ButtonProps) {
         },
       });
 
-      if (!data || !data.getMe) {
+      if (!data || !data.getMe || gqlError) {
         await deleteUser(user);
         await signOut(auth);
-        alert("Access Denied: Unregistered account.");
-        setIsVerifying(false);
-        router.push("/access-denied");
+        router.replace("/access-denied");
         return;
       }
 
-      console.log(`Verified Clinic Account: ${data.getMe.firstName}`);
-      setIsVerifying(false);
+      //store in redux
+      dispatch(setCredentials(data.getMe));
+
+      router.replace("/select-clinic");
     } catch (error) {
       console.error("Error signing in with Google:", error);
-      await deleteUser(user);
       await signOut(auth);
-      router.push("/access-denied");
+      router.replace("/access-denied");
     }
   };
 
   return (
-    <button
-      onClick={handleGoogleSignIn}
-      className="flex items-center gap-2 px-4 py-2 border rounded-lg shadow-sm hover:bg-gray-50"
-    >
-      <img src="/google.svg" alt="Google logo" className="w-5 h-5" />
-      <span>Sign in with Google</span>
-    </button>
+    <div className="w-auto flex justify-center items-center px-4">
+      <button
+        onClick={handleGoogleSignIn}
+        className="flex items-center gap-2 px-4 py-2 border rounded-lg shadow-sm hover:bg-gray-50 cursor-pointer"
+      >
+        <Image
+          src="/google.svg"
+          alt="Google logo"
+          className="w-5 h-5"
+          width={24}
+          height={24}
+        />
+        <span>Sign in with Google</span>
+      </button>
+    </div>
   );
 }
