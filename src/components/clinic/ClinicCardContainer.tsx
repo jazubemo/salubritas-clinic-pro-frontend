@@ -6,7 +6,7 @@ import ClinicCard from "./ClinicCard";
 
 
 export default function ClinicCardContainer() {
-  const { clinicMemberships } = useAppSelector((state) => state.auth.user);
+  const { clinicMemberships = [] } = useAppSelector((state) => state.auth.user) || {};
   const activeClinicMemberships = clinicMemberships.filter((clinic) => clinic.status === "ACTIVE")
 
   return (

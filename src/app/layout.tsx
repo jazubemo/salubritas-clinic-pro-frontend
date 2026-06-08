@@ -4,7 +4,7 @@ import Image from "next/image";
 import globalBackground from "../../public/generalBackground.jpg";
 
 import ApolloGraphQLProvider from "@/providers/ApolloGraphQLProvider";
-import StoreProvider from './../providers/StoreProvider'
+import StoreProvider from "./../providers/StoreProvider";
 import FirebaseAuthProvider from "@/providers/FirebaseAuthProvider";
 import ProtectedRouteGuard from "@/providers/ProtectRouteGuard";
 
@@ -34,11 +34,7 @@ export default function RootLayout({
 
         <ApolloGraphQLProvider>
           <StoreProvider>
-            <FirebaseAuthProvider>
-              <ProtectedRouteGuard>
-                {children}
-              </ProtectedRouteGuard>
-            </FirebaseAuthProvider>
+            <FirebaseAuthProvider>{children}</FirebaseAuthProvider>
           </StoreProvider>
         </ApolloGraphQLProvider>
       </body>
