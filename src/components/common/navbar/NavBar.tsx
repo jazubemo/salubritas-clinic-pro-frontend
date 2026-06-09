@@ -6,7 +6,6 @@ import { useParams, usePathname } from "next/navigation";
 import {
   Calendar,
   Users,
-  Building2,
   User,
   ChevronDown,
   HeartPulse,
@@ -15,8 +14,8 @@ import { RootState } from "@/lib/store";
 import { useSelector } from "react-redux";
 
 import SignOutButton from "../../auth/SignOutButton";
-import SimpleClinicDropdown, { ClinicOption } from "../SimpleClinicDropdown";
 import NavBarItem, { NavBarTitle } from "./NavBarItem";
+import ClinicSwitcher from "./ClinicSwitcher";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -87,41 +86,12 @@ export default function Navbar() {
                 />
               }
             />
+
           </div>
         </div>
 
         <div className="flex items-center gap-6">
-          {/* Clinic Details */}
-          {userClinicMemberships.length > 0 ? (
-            <SimpleClinicDropdown
-              options={userClinicMemberships.map((clinic) => {
-                return {
-                  clinicId: clinic.clinicId,
-                  clinicName: clinic.name,
-                } as ClinicOption;
-              })}
-              currentClinicId={clinicId}
-              onChange={(nextClinicId: string) =>
-                window.open(
-                  `/clinic/${nextClinicId}/appointments`,
-                  "_blank",
-                  "noopener,noreferrer",
-                )
-              }
-            />
-          ) : (
-            <div className="flex items-center gap-2 border-r border-white/10 pr-6 text-white">
-              <Building2 className="h-5 w-5 text-cyan-400" />
-              <div className="flex flex-col">
-                <span className="text-xs text-white/50 font-medium uppercase tracking-wider">
-                  Active Clinic
-                </span>
-                <span className="text-sm font-semibold">
-                  {currentClinic.name || "Unknown"}
-                </span>
-              </div>
-            </div>
-          )}
+          <ClinicSwitcher clinics={userClinicMemberships} currentClinic={currentClinic} />
 
           <div className="relative z-50" ref={dropdownRef}>
             <button

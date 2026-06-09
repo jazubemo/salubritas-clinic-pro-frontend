@@ -14,15 +14,20 @@ export default function SignInPage() {
   const router = useRouter();
   const pathname = usePathname();
 
-  const { isAuthenticated } = useAppSelector((state) => state.auth);
+  const { isAuthenticated, user } = useAppSelector((state) => state.auth);
 
   const [isVerifying, setIsVerifying] = useState(false);
 
   useEffect(() => {
-    if (isAuthenticated && pathname === "/sign-in") {
-      router.replace("/select-clinic");
+    if (isAuthenticated && pathname === "/sign-in" && user) {
+      if (user.clinicMemberships.length > 1) {
+        router.replace("/select-clinic");
+        return;
+      }
+      const currentClinic = user.clinicMemberships[0];
+      router.replace(`/clinic/${currentClinic.clinicId}/appointments`);
     }
-  }, [isAuthenticated, pathname, router]);
+  }, [isAuthenticated, pathname, router, user]);
 
   if (isVerifying) {
     return <Loader message="Verifying clinic credentials..." />;
