@@ -6,7 +6,6 @@ import globalBackground from "../../public/generalBackground.jpg";
 import ApolloGraphQLProvider from "@/providers/ApolloGraphQLProvider";
 import StoreProvider from "./../providers/StoreProvider";
 import FirebaseAuthProvider from "@/providers/FirebaseAuthProvider";
-import ProtectedRouteGuard from "@/providers/ProtectRouteGuard";
 
 export const metadata: Metadata = {
   title: "Salubritas Clinic Pro",
@@ -18,6 +17,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+  
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="min-h-screen w-full flex flex-col items-center justify-center relative bg-slate-950 text-slate-900 antialiased overflow-x-hidden">

@@ -1,12 +1,11 @@
 "use client";
 
-import React, { useState, useEffect, useRef, use } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
 import {
   Calendar,
   Users,
-  LogOut,
   Building2,
   User,
   ChevronDown,
@@ -14,6 +13,7 @@ import {
 } from "lucide-react";
 import { RootState } from "@/lib/store";
 import { useSelector } from "react-redux";
+
 import SignOutButton from "../auth/SignOutButton";
 import SimpleClinicDropdown, { ClinicOption } from "./SimpleClinicDropdown";
 
@@ -47,7 +47,6 @@ export default function Navbar() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-  //"text-sm font-sans text-slate-400 hover:text-slate-600 transition-colors underline underline-offset-4 cursor-pointer"
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-white/10 bg-white/5 backdrop-blur-md px-6 py-3">

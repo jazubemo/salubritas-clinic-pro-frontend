@@ -6,7 +6,7 @@ import { auth } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
 import { LogOut } from "lucide-react";
 import { useDispatch } from "react-redux";
-import { logOut, setCredentials } from "@/lib/features/auth/authSlice";
+import { logOut } from "@/lib/features/auth/authSlice";
 
 interface SignOutProps {
   customStyle?: string;
@@ -18,10 +18,13 @@ export default function SignOutButton({ customStyle }: SignOutProps) {
 
   const handleSignOut = async () => {
     try {
-      router.replace("/sign-in");
       dispatch(logOut());
+
+      localStorage.setItem("logout-event", Date.now().toString());
+
+      router.replace("/sign-in");
+      
       await signOut(auth);
-      console.log("click");
     } catch (error) {
       console.log(`Error`, error);
     }
