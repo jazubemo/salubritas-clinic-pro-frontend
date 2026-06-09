@@ -1,7 +1,5 @@
 "use client";
 
-import { RootState } from "@/lib/store";
-import { useSelector } from "react-redux";
 import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
 
@@ -18,13 +16,6 @@ import UserProfileDropdown from "./UserProfileDropdown";
 export default function Navbar() {
   const pathname = usePathname();
   const { clinicId } = useParams() as { clinicId: string };
-
-  const user = useSelector((state: RootState) => state.auth.user);
-  const userClinicMemberships = user?.clinicMemberships || [];
-
-  const currentClinic = user?.clinicMemberships.find(
-    (clinicMembership) => clinicMembership.clinicId === clinicId,
-  );
 
   const appointmentsPath = `/clinic/${clinicId}/appointments`;
   const patientsPath = `/clinic/${clinicId}/patients`;
@@ -73,7 +64,7 @@ export default function Navbar() {
         </div>
 
         <div className="flex items-center gap-6">
-          <ClinicSwitcher clinics={userClinicMemberships} currentClinic={currentClinic} />
+          <ClinicSwitcher currentClinicId={clinicId} />
           <UserProfileDropdown />
         </div>
       </div>
