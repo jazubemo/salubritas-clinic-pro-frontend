@@ -14,13 +14,13 @@ import {
 import { RootState } from "@/lib/store";
 import { useSelector } from "react-redux";
 
-import SignOutButton from "../auth/SignOutButton";
-import SimpleClinicDropdown, { ClinicOption } from "./SimpleClinicDropdown";
-
+import SignOutButton from "../../auth/SignOutButton";
+import SimpleClinicDropdown, { ClinicOption } from "../SimpleClinicDropdown";
+import NavBarItem, { NavBarTitle } from "./NavBarItem";
 
 export default function Navbar() {
   const pathname = usePathname();
-  const { clinicId } = useParams() as { clinicId: string };;
+  const { clinicId } = useParams() as { clinicId: string };
 
   const user = useSelector((state: RootState) => state.auth.user);
   const userClinicMemberships = user?.clinicMemberships || [];
@@ -67,33 +67,26 @@ export default function Navbar() {
           </Link>
 
           <div className="flex items-center gap-1">
-            <Link
-              href={appointmentsPath}
-              className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-all ${
-                pathname === appointmentsPath
-                  ? "bg-white/10 text-white shadow-sm ring-1 ring-white/20"
-                  : "text-white/70 hover:bg-white/5 hover:text-white"
-              }`}
-            >
-              <Calendar
-                className={`h-4 w-4 ${pathname === appointmentsPath ? "text-cyan-400" : "text-white/50"}`}
-              />
-              Appointments
-            </Link>
-
-            <Link
-              href={patientsPath}
-              className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-all ${
-                pathname === patientsPath
-                  ? "bg-white/10 text-white shadow-sm ring-1 ring-white/20"
-                  : "text-white/70 hover:bg-white/5 hover:text-white"
-              }`}
-            >
-              <Users
-                className={`h-4 w-4 ${pathname === patientsPath ? "text-cyan-400" : "text-white/50"}`}
-              />
-              Patients
-            </Link>
+            <NavBarItem
+              clinicId={clinicId}
+              currentPathname={pathname}
+              title={NavBarTitle.Appointments}
+              Icon={
+                <Calendar
+                  className={`h-4 w-4 ${pathname === appointmentsPath ? "text-cyan-400" : "text-white/50"}`}
+                />
+              }
+            />
+            <NavBarItem
+              clinicId={clinicId}
+              currentPathname={pathname}
+              title={NavBarTitle.Patients}
+              Icon={
+                <Users
+                  className={`h-4 w-4 ${pathname === patientsPath ? "text-cyan-400" : "text-white/50"}`}
+                />
+              }
+            />
           </div>
         </div>
 

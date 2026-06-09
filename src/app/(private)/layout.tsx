@@ -1,5 +1,5 @@
-import NavBar from "@/components/common/NavBar";
-import ProtectedRouteGuard from "../../providers/ProtectRouteGuard"; // Your guard path
+import NavBar from "@/components/common/navbar/NavBar";
+import ProtectedRouteGuard from "../../providers/ProtectRouteGuard";
 
 interface PrivateLayoutProps {
   children: React.ReactNode;
