@@ -1,22 +1,31 @@
 import { Building2 } from "lucide-react";
 
 import SimpleClinicDropdown from "../SimpleClinicDropdown";
-import { ClinicMembership } from "@/__generated__/graphql";
+import { selectActiveClinics, selectClinicByParamsId } from "@/lib/features/auth/authSelectors";
+import { useAppSelector } from "@/lib/store";
 
 interface ClinicSwitcherProps {
-  currentClinic: ClinicMembership | undefined;
-  clinics: ClinicMembership[];
+  currentClinicId: string
 }
 
-const ClinicSwitcher = ({ currentClinic, clinics }: ClinicSwitcherProps) => {
-  const clinicOptions = clinics.map((clinic) => ({
+
+const ClinicSwitcher = ({ currentClinicId }: ClinicSwitcherProps) => {
+  const activeClinics = useAppSelector((state) =>
+    selectActiveClinics(state),
+  );
+
+  const currentClinic = useAppSelector((state) =>
+    selectClinicByParamsId(state, currentClinicId),
+  );
+
+  const clinicOptions = activeClinics.map((clinic) => ({
     clinicId: clinic.clinicId,
     clinicName: clinic.name,
   }));
 
   return (
     <>
-      {clinics.length > 1 ? (
+      {activeClinics.length > 1 ? (
         <SimpleClinicDropdown
           options={clinicOptions}
           currentClinicId={currentClinic?.clinicId || ""}

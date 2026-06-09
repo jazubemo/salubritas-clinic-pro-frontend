@@ -2,24 +2,20 @@
 
 import { useParams, usePathname } from "next/navigation";
 
+import { useAppSelector } from "@/lib/store";
+import { selectClinicByParamsId } from "@/lib/features/auth/authSelectors";
+
 import NavBarItem, { NavBarTitle } from "./NavBarItem";
 import ClinicSwitcher from "./ClinicSwitcher";
 import UserProfileDropdown from "./UserProfileDropdown";
 import NavBarLogo from "./NavBarLogo";
-import { useSelector } from "react-redux";
-import { RootState } from "@/lib/store";
 
 
 export default function Navbar() {
   const pathname = usePathname();
-  const { clinicId } = useParams() as { clinicId: string };
+  const { clinicId: currentClinicId } = useParams() as { clinicId: string };
 
-  const user = useSelector((state: RootState) => state.auth.user);
-  const availableClinics = user?.clinicMemberships || [];
-
-  const currentClinic = availableClinics.find(
-    (clinicMembership) => clinicMembership.clinicId === clinicId,
-  );
+  const currentClinic = useAppSelector((state) => selectClinicByParamsId(state, currentClinicId));
 
   const isPatient = (): boolean => {
     return currentClinic?.roles.some((clinic) => clinic.includes("PATIENT")) || false;
@@ -33,13 +29,13 @@ export default function Navbar() {
 
           <div className="flex items-center gap-1">
             <NavBarItem
-              clinicId={clinicId}
+              clinicId={currentClinicId}
               currentPathname={pathname}
               title={NavBarTitle.Appointments}
             />
             {!isPatient() && (
               <NavBarItem
-                clinicId={clinicId}
+                clinicId={currentClinicId}
                 currentPathname={pathname}
                 title={NavBarTitle.Patients}
               />
@@ -48,7 +44,7 @@ export default function Navbar() {
         </div>
 
         <div className="flex items-center gap-6">
-          <ClinicSwitcher clinics={availableClinics} currentClinic={currentClinic} />
+          <ClinicSwitcher currentClinicId={currentClinicId} />
           <UserProfileDropdown />
         </div>
       </div>
