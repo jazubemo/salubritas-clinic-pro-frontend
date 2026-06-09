@@ -6,8 +6,7 @@ import ClinicCard from "./ClinicCard";
 
 
 export default function ClinicCardContainer() {
-  const { clinicMemberships = [] } = useAppSelector((state) => state.auth.user) || {};
-  const activeClinicMemberships = clinicMemberships.filter((clinic) => clinic.status === "ACTIVE")
+  const { clinicMemberships: activeClinicMemberships  = [] } = useAppSelector((state) => state.auth.user) || {};
 
   return (
     <div className="w-full flex flex-col items-center gap-2 mb-8">

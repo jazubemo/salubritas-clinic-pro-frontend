@@ -1,22 +1,14 @@
-import { RootState } from "@/lib/store";
-import { useSelector } from "react-redux";
-
 import { Building2 } from "lucide-react";
 
 import SimpleClinicDropdown from "../SimpleClinicDropdown";
+import { ClinicMembership } from "@/__generated__/graphql";
 
 interface ClinicSwitcherProps {
-  currentClinicId: string;
+  currentClinic: ClinicMembership | undefined;
+  clinics: ClinicMembership[];
 }
 
-const ClinicSwitcher = ({ currentClinicId }: ClinicSwitcherProps) => {
-  const user = useSelector((state: RootState) => state.auth.user);
-  const clinics = user?.clinicMemberships || [];
-
-  const currentClinic = user?.clinicMemberships.find(
-    (clinicMembership) => clinicMembership.clinicId === currentClinicId,
-  );
-
+const ClinicSwitcher = ({ currentClinic, clinics }: ClinicSwitcherProps) => {
   const clinicOptions = clinics.map((clinic) => ({
     clinicId: clinic.clinicId,
     clinicName: clinic.name,
