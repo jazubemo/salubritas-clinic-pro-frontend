@@ -8,7 +8,7 @@ export default function SelectClinicPage() {
       <LogoBadge />
       <ClinicCardContainer />
 
-      <SignOutButton />
+      <SignOutButton customStyle="text-sm gap-2 flex items-center justify-center font-sans text-slate-400 hover:text-slate-600 transition-colors underline underline-offset-4 cursor-pointer" />
     </div>
   );
 }
