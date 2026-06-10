@@ -1,18 +1,17 @@
-import { Building2 } from "lucide-react";
-
 import SimpleClinicDropdown from "../SimpleClinicDropdown";
-import { selectActiveClinics, selectClinicByParamsId } from "@/lib/features/auth/authSelectors";
+import {
+  selectActiveClinics,
+  selectClinicByParamsId,
+} from "@/lib/features/auth/authSelectors";
 import { useAppSelector } from "@/lib/store";
+import ActiveClinicIndicator from "./ActiveClinicIndicator";
 
 interface ClinicSwitcherProps {
-  currentClinicId: string
+  currentClinicId: string;
 }
 
-
 const ClinicSwitcher = ({ currentClinicId }: ClinicSwitcherProps) => {
-  const activeClinics = useAppSelector((state) =>
-    selectActiveClinics(state),
-  );
+  const activeClinics = useAppSelector((state) => selectActiveClinics(state));
 
   const currentClinic = useAppSelector((state) =>
     selectClinicByParamsId(state, currentClinicId),
@@ -38,17 +37,7 @@ const ClinicSwitcher = ({ currentClinicId }: ClinicSwitcherProps) => {
           }
         />
       ) : (
-        <div className="flex items-center gap-2 border-r border-white/10 pr-6 text-white">
-          <Building2 className="h-5 w-5 text-cyan-400" />
-          <div className="flex flex-col">
-            <span className="text-xs text-white/50 font-medium uppercase tracking-wider">
-              Active Clinic
-            </span>
-            <span className="text-sm font-semibold">
-              {currentClinic?.name || "Unknown"}
-            </span>
-          </div>
-        </div>
+        <ActiveClinicIndicator clinicName={currentClinic?.name} />
       )}
     </>
   );

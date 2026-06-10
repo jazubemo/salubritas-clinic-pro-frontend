@@ -47,9 +47,9 @@ const NavBarItem = ({
   return (
     <Link
       href={itemPath}
-      className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-all ${
+      className={`flex items-center gap-2 rounded-full px-3 py-2 text-sm font-medium transition-all ${
         isActive
-          ? "bg-white/10 text-white/90 font-semibold shadow-sm ring-1 ring-white/20"
+          ? "bg-white/15 text-white/90 font-semibold shadow-sm ring-1 ring-white/20"
           : "text-white/70 hover:bg-white/5 hover:text-white"
       }`}
     >

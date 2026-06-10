@@ -39,7 +39,7 @@ const UserProfileDropdown = () => {
         </div>
 
         <ChevronDown
-          className={`h-4 w-4 text-white/60 transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`}
+          className={`h-3 w-3 opacity-50 text-white/60 transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`}
         />
       </button>
 
