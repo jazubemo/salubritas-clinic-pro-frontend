@@ -1,18 +1,14 @@
 "use client";
 
-import { deleteUser, signInWithPopup, signOut } from "firebase/auth";
+import { signInWithPopup, signOut } from "firebase/auth";
 import { auth, googleProvider } from "@/lib/firebase";
-
 import { useApolloClient } from "@apollo/client/react";
 import { useRouter } from "next/navigation";
 import { useAppDispatch } from "@/lib/store";
 
-import { setCredentials } from "@/lib/features/auth/authSlice";
-
-import { GetMeQuery } from "@/__generated__/graphql";
-import { GET_ME } from "@/graphql/queries/getMe";
-
 import Image from "next/image";
+
+import { verifyAndSyncUserThunk } from "@/graphql/thunks/verifyAndSyncUserThunk";
 
 interface ButtonProps {
   setIsVerifying: (value: boolean) => void;
@@ -24,32 +20,22 @@ export default function GoogleSignInButton({ setIsVerifying }: ButtonProps) {
   const router = useRouter();
 
   const handleGoogleSignIn = async () => {
-    const result = await signInWithPopup(auth, googleProvider);
-    const { user } = result;
-    const token = await user.getIdToken();
+    setIsVerifying(true);
 
     try {
-      setIsVerifying(true);
+      const userCredential = await signInWithPopup(auth, googleProvider);
+      const { user } = userCredential;
+      const token = await user.getIdToken();
 
-      const { data, error: gqlError } = await apolloClient.query<GetMeQuery>({
-        query: GET_ME,
-        fetchPolicy: "network-only",
-        context: {
-          headers: { Authorization: `Bearer ${token}` },
-        },
-      });
-
-      if (!data || !data.getMe || gqlError) {
-        await deleteUser(user);
-        await signOut(auth);
-        router.replace("/access-denied");
-        return;
-      }
-
-      //store in redux
-      dispatch(setCredentials(data.getMe));
-
-      router.replace("/select-clinic");
+      dispatch(
+        verifyAndSyncUserThunk({
+          user,
+          token,
+          auth,
+          router,
+          apolloClient,
+        }),
+      );
     } catch (error) {
       console.error("Error signing in with Google:", error);
       await signOut(auth);

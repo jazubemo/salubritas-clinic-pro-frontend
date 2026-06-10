@@ -10,6 +10,7 @@ import { GetMeQuery } from "@/__generated__/graphql";
 import { useLazyQuery } from "@apollo/client/react";
 
 import Loader from "@/components/common/Loader";
+import { useRouter } from "next/navigation";
 
 export default function FirebaseAuthProvider({
   children,
@@ -17,6 +18,8 @@ export default function FirebaseAuthProvider({
   children: React.ReactNode;
 }) {
   const dispatch = useAppDispatch();
+  const router = useRouter();
+
   const [loadingSession, setLoadingSession] = useState(true);
 
   const [fetchDbUser] = useLazyQuery<GetMeQuery>(GET_ME, {
@@ -24,11 +27,26 @@ export default function FirebaseAuthProvider({
   });
 
   useEffect(() => {
+    const handleStorageChange = (event: StorageEvent) => {
+      if (event.key === "logout-event") {
+        dispatch(logOut());
+        router.replace("/sign-in");
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, [router]);
+
+  useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
         try {
           const { data } = await fetchDbUser();
-          
+
           if (data?.getMe) {
             dispatch(setCredentials(data.getMe));
           }
