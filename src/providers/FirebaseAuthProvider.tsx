@@ -64,7 +64,7 @@ export default function FirebaseAuthProvider({
   }, [dispatch, fetchDbUser]);
 
   if (loadingSession) {
-    return <Loader message="Verifying security session..." fullPage={true} />;
+    return <Loader message="Verifying security session from Firebase Auth Provider..." fullPage={true} />;
   }
 
   return <>{children}</>;

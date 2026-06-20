@@ -1,5 +1,6 @@
 "use client";
 
+import AppointmentCalendar from "@/components/appointment/AppointmentCalendar";
 import { withRoleProtection } from "@/components/common/withRoleProtection";
 import { use } from "react";
 
@@ -11,9 +12,8 @@ function AppointmentsPage({ params }: Props) {
   const { clinicId } = use(params);
 
   return (
-    <div className="relative z-30 min-h-screen bg-white p-8 text-black">
-      <h1 className="text-2xl font-bold">Clinic ID: {clinicId}</h1>
-      <p className="mt-2 text-lg">Appointment List</p>
+    <div className="relative h-full z-30 bg-white flex-grow w-full overflow-hidden relative">
+      <AppointmentCalendar />
     </div>
   );
 }

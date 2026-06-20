@@ -25,4 +25,163 @@ body {
   font-family: Arial, Helvetica, sans-serif !important;
 }
 
+/* --- Google Calendar Full-Width Timeline Fix --- */
+
+.fc .fc-timegrid-now-indicator-line {
+  border-top: 2px solid #ef4444 !important;
+  z-index: 10 !important;
+}
+
+.fc .fc-timegrid-now-indicator-arrow {
+  display: none !important;
+}
+
+
+.fc-timegrid-bg-harness .google-style-timeline {
+  background: transparent !important;
+  border-top: 2px solid #ef4444 !important; /* Red Horizontal Line */
+  opacity: 1 !important;
+  z-index: 20 !important;
+  pointer-events: none !important;
+}
+
+/* =========================================================
+   TRUE GOOGLE CALENDAR BUTTON REFRESH
+   ========================================================= */
+
+/* 1. General Toolbar Reset */
+.fc-header-toolbar {
+  padding: 12px 24px !important;
+  margin-bottom: 0 !important;
+  border-bottom: 1px solid #e3e3e3 !important; 
+  background-color: #ffffff;
+}
+
+/* 2. Global Button Core */
+.fc .fc-button-primary {
+  background-color: transparent !important;
+  border: 1px solid #747775 !important;   
+  color: #444746 !important;             
+  box-shadow: none !important;
+  font-weight: 500 !important;
+  font-size: 14px !important;
+  letter-spacing: .25px !important;
+  text-transform: none !important;
+  transition: background-color 0.2s, color 0.2s !important;
+}
+
+/* 3. The "Today" Button (Pill-shaped, border, independent) */
+.fc .fc-today-button, 
+.fc .fc-button-primary:disabled {
+  border: 1px solid #747775 !important;
+  border-radius: 100px !important;      
+  padding: 6px 16px !important;
+  opacity: 1 !important;                
+  background-color: #ffffff !important;
+  color: #1f1f1f !important;
+}
+.fc .fc-today-button:hover,
+.fc .fc-button-primary:disabled:hover {
+  background-color: #f1f3f4 !important; 
+  color: #1a73e8 !important;            
+}
+
+/* 4. Left/Right Navigation Arrow Group (< >) */
+.fc .fc-button-group {
+  border: none !important;              
+  margin-left: 8px !important;
+  gap: 2px !important;
+}
+.fc .fc-button-group .fc-button {
+  border: none !important;               
+  border-radius: 50% !important;       
+  width: 36px !important;
+  height: 36px !important;
+  padding: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+.fc .fc-button-group .fc-button:hover {
+  background-color: rgba(68, 71, 70, 0.08) !important;
+  color: #1f1f1f !important;
+}
+
+/* 5. View Switcher Group (Year, Month, Week) */
+
+.fc .fc-header-toolbar .fc-toolbar-chunk:last-child .fc-button-group {
+  border: 1px solid #747775 !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
+  display: inline-flex !important;     
+  align-items: center !important;
+  min-width: 200px !important;         
+  background-color: #ffffff !important;
+}
+
+
+.fc .fc-header-toolbar .fc-toolbar-chunk:last-child .fc-button {
+  flex: 1 1 0% !important;                   
+  border: none !important;
+  border-radius: 0px !important;
+  padding: 8px 0 !important;          
+  margin: 0 !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  text-align: center !important;
+  white-space: nowrap !important;      
+  display: flex !important;
+  height: 100% !important;
+}
+
+.fc .fc-header-toolbar .fc-toolbar-chunk:last-child .fc-button:not(:last-child) {
+  border-right: 1px solid #747775 !important;
+}
+
+/* Maintain active selection style */
+.fc .fc-header-toolbar .fc-toolbar-chunk:last-child .fc-button-active {
+  background-color: rgba(26, 115, 232, 0.08) !important;
+  color: #1a73e8 !important;
+  font-weight: 600 !important;
+}
+
+/* Divider line between grouped view buttons */
+.fc .fc-button-group:last-child .fc-button:not(:last-child) {
+  border-right: 1px solid #747775 !important;
+}
+
+/* Active Selected View Highlight (Turns blue text with subtle background tint) */
+.fc .fc-button-group:last-child .fc-button-active {
+  background-color: rgba(26, 115, 232, 0.08) !important;
+  color: #1a73e8 !important;           
+  font-weight: 600 !important;
+}
+
+/* 6. Main Header Title Integration */
+.fc .fc-toolbar-title {
+  font-family: "Product Sans", "Roboto", sans-serif !important;
+  font-size: 22px !important;
+  font-weight: 400 !important;
+  color: #1f1f1f !important;
+  margin-left: 16px !important;
+}
+
+
+.fc .fc-timegrid-col.fc-day-today {
+  background-color: #ffffff !important;
+}
+
+.fc .fc-day-today .fc-timegrid-slot,
+.fc .fc-day-today .fc-timegrid-col-frame,
+.fc .fc-day-today .fc-timegrid-bg-workspace,
+.fc .fc-day-today .fc-timegrid-now-indicator-container,
+.fc td.fc-day-today {
+  background-color: transparent !important;
+}
+
+
+
+
+
+
 
