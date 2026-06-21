@@ -13,7 +13,7 @@ function AppointmentsPage({ params }: Props) {
 
   return (
     <div className="relative h-full z-30 bg-white flex-grow w-full overflow-hidden relative">
-      <AppointmentCalendar />
+      <AppointmentCalendar clinicId={clinicId} />
     </div>
   );
 }
