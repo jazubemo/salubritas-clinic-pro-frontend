@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import multiMonthPlugin from "@fullcalendar/multimonth";
 
 export default function Calendar() {
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
   const testAppointments = [
     {
       id: "1",
@@ -26,8 +27,14 @@ export default function Calendar() {
     },
   ];
 
-  const currentSystemTime = useMemo(() => {
+  const getTimeThreeHoursAgo = () => {
     const now = new Date();
+    now.setHours(now.getHours() - 3)
+    return now;
+  }
+
+  const timeThreeHoursAgoFormatted = useMemo(() => {
+    const now = getTimeThreeHoursAgo();
     const hours = String(now.getHours()).padStart(2, "0");
     const minutes = String(now.getMinutes()).padStart(2, "0");
     return `${hours}:${minutes}:00`;
@@ -58,7 +65,7 @@ export default function Calendar() {
           allDaySlot={false}
           events={testAppointments}
           nowIndicator={true}
-          scrollTime={currentSystemTime}
+          scrollTime={timeThreeHoursAgoFormatted}
           scrollTimeReset={false}
           timeZone="America/Tegucigalpa"
         />

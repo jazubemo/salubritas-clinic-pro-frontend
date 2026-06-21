@@ -110,6 +110,8 @@ body {
 /* 5. View Switcher Group (Year, Month, Week) */
 
 .fc .fc-header-toolbar .fc-toolbar-chunk:last-child .fc-button-group {
+  flex: 1 1 0% !important;
+  border: none !important;  
   border: 1px solid #747775 !important;
   border-radius: 8px !important;
   overflow: hidden !important;
@@ -125,7 +127,6 @@ body {
   border: none !important;
   border-radius: 0px !important;
   padding: 8px 0 !important;          
-  margin: 0 !important;
   font-size: 14px !important;
   font-weight: 500 !important;
   text-align: center !important;
@@ -140,9 +141,10 @@ body {
 
 /* Maintain active selection style */
 .fc .fc-header-toolbar .fc-toolbar-chunk:last-child .fc-button-active {
-  background-color: rgba(26, 115, 232, 0.08) !important;
+  background-color: rgba(26, 115, 232, 0.1) !important;
   color: #1a73e8 !important;
   font-weight: 600 !important;
+  background-image: none !important; 
 }
 
 /* Divider line between grouped view buttons */
