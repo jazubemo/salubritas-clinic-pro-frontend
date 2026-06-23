@@ -11,13 +11,14 @@ import { Appointment } from "@/__generated__/graphql";
 import { DateSelectArg } from "@fullcalendar/core/index.js";
 import { AppointmentEvent } from "@/common/types/AppointmentEvent";
 import { ONE_HOUR_IN_MILLISECONDS } from "@/common/constants/time";
+import { useAppointments } from "@/hooks/useAppointments";
 
 interface AppointmentCalendarProps {
   clinicId: string;
 }
 
 export default function Calendar({ clinicId }: AppointmentCalendarProps) {
-  const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const { appointments, loading, error } = useAppointments();
 
   const handleSelect = (selectInfo: DateSelectArg) => {
     const durationInMinutes =

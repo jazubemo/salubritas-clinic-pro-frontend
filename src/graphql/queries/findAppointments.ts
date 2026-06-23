@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client";
 
-export const GET_ME = gql`
+export const AppointmentsQuery = gql`
   query Appointments(
     $activeClinicId: String!
     $endRange: String!

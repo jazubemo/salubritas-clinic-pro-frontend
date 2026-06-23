@@ -2,6 +2,7 @@
 
 import AppointmentCalendar from "@/components/appointment/AppointmentCalendar";
 import { withRoleProtection } from "@/components/common/withRoleProtection";
+import { AppointmentProvider } from "@/context/AppointmentContext";
 import { use } from "react";
 
 type Props = {
@@ -13,9 +14,15 @@ function AppointmentsPage({ params }: Props) {
 
   return (
     <div className="relative h-full z-30 bg-white flex-grow w-full overflow-hidden relative">
-      <AppointmentCalendar clinicId={clinicId} />
+      <AppointmentProvider>
+        <AppointmentCalendar clinicId={clinicId} />
+      </AppointmentProvider>
     </div>
   );
 }
 
-export default withRoleProtection(AppointmentsPage, ["PATIENT", "DOCTOR", "ADMIN"]);
+export default withRoleProtection(AppointmentsPage, [
+  "PATIENT",
+  "DOCTOR",
+  "ADMIN",
+]);
