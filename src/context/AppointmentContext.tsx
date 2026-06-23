@@ -9,7 +9,11 @@ interface AppointmentContextType {
 
 export const AppointmentContext = createContext<AppointmentContextType | null>(null);
 
-export function AppointmentProvider({ children }: { children: ReactNode }) {
+interface AppointmentProviderProps {
+  children: ReactNode;
+}
+
+export function AppointmentProvider({ children }: AppointmentProviderProps) {
   const [appointments, setAppointments] = useState<AppointmentEvent[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -25,6 +29,7 @@ export function AppointmentProvider({ children }: { children: ReactNode }) {
         setLoading(false);
       }
     }
+
     fetchAppointments();
   }, []);
 
