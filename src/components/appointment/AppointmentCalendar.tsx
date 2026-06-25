@@ -31,7 +31,7 @@ export default function Calendar({ clinicId }: AppointmentCalendarProps) {
     error,
     handleSelect,
   } = useAppointments();
-  console.log('isLoading', isLoading);
+  console.log("isLoading", isLoading);
 
   const calendarRef = useRef<FullCalendar>(null);
 
@@ -52,9 +52,16 @@ export default function Calendar({ clinicId }: AppointmentCalendarProps) {
   }, []);
 
   const handleDatesSet = (arg: any) => {
-    const fullCalendarView = arg.view.type;
-    const simplifiedView = CALENDAR_VIEW_MAP[fullCalendarView] || "day"; 
-    
+    const viewStart  = arg.view.calendar.formatIso(arg.view.currentStart);
+    const viewEnd = arg.view.calendar.formatIso(arg.view.currentEnd);
+
+    console.log("startUserCalendarRange", viewStart);
+    console.log("endUserCalendarRange", viewEnd);
+
+    // view type
+    const fullCalendarViewType = arg.view.type;
+    const simplifiedView = CALENDAR_VIEW_MAP[fullCalendarViewType] || "day";
+
     setCurrentView(simplifiedView);
   };
 
