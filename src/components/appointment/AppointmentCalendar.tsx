@@ -20,48 +20,6 @@ interface AppointmentCalendarProps {
 export default function Calendar({ clinicId }: AppointmentCalendarProps) {
   const { appointments, loading, error } = useAppointments();
 
-  const handleSelect = (selectInfo: DateSelectArg) => {
-    const durationInMinutes =
-      selectInfo.end.getTime() - selectInfo.start.getTime();
-    const durationInHours = durationInMinutes / ONE_HOUR_IN_MILLISECONDS;
-
-    // 2. Enforce the 1-hour maximum clinic rule
-    if (durationInHours > 1) {
-      alert("Clinic rules limit appointments to a maximum of 1 hour.");
-      selectInfo.view.calendar.unselect();
-      return;
-    }
-
-    const patientName = prompt("Enter Patient Name:");
-    selectInfo.view.calendar.unselect();
-
-    const confirmedAppointmentColor = "#0B8043";
-    const pendingAppointmentColor = "#617480"
-
-    if (patientName) {
-      const newAppointment: AppointmentEvent = {
-        id: crypto.randomUUID(),
-        _id: crypto.randomUUID(),
-        title: patientName,
-        start: selectInfo.startStr,
-        end: selectInfo.endStr,
-        clinicId: clinicId,
-        startTime: selectInfo.startStr, // e.g., "2026-06-21T10:00:00"
-        endTime: selectInfo.endStr, // e.g., "2026-06-21T11:00:00"
-        status: "PENDING",
-        isNewPatient: false,
-        reason: "Routine Checkup",
-        patientId: "6a30562acbc138294d977b46",
-        patientName: "Henry Altman",
-        doctorId: "6a3054facbc138294d977b30",
-        doctorName: "Miranda Bailey",
-        backgroundColor: confirmedAppointmentColor,
-      };
-
-      setAppointments((prev) => [...prev, newAppointment]);
-    }
-  };
-  console.log("appointments", appointments);
 
   const getTimeOneHourAgo = () => {
     const now = new Date();
@@ -107,8 +65,8 @@ export default function Calendar({ clinicId }: AppointmentCalendarProps) {
           }}
           height="100%"
           weekends={true}
-          slotMinTime="08:00:00"
-          slotMaxTime="16:00:00"
+          // slotMinTime="08:00:00"
+          // slotMaxTime="16:00:00"
           slotDuration="00:15:00"
           allDaySlot={false}
           events={appointments}

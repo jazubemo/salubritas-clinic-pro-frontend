@@ -1,21 +1,21 @@
+import { DateTime } from "luxon";
 import { DEFAULT_APP_TIMEZONE } from "../constants/timezone";
 
 /**
- * Formats a UTC ISO date string into the application's default timezone.
+ * Transforms a UTC ISO string into a localized 'YYYY-MM-DDTHH:mm:ss' format
+ * safe for Next.js SSR and HTML datetime-local inputs.
  */
-export function formatToAppTimezone(utcIsoString: string): string {
-  if (!utcIsoString) return ""; 
+export function formatToAppTimezone(utc: string | null | undefined): string {
+  if (!utc) return "";
 
-  const date = new Date(utcIsoString);
+  const dateTime = DateTime.fromISO(utc, { zone: "utc" })
+    .setZone(DEFAULT_APP_TIMEZONE);
 
-  if (isNaN(date.getTime())) {
-    throw new Error(`Invalid UTC date string provided: ${utcIsoString}`);
+  if (!dateTime.isValid) {
+    console.error(`Invalid date passed: ${utc}`, dateTime.invalidExplanation);
+    return "";
   }
 
-  return date.toLocaleString("es-HN", {
-    timeZone: DEFAULT_APP_TIMEZONE,
-    dateStyle: "long",
-    timeStyle: "short",
-  });
+  return dateTime.toFormat("yyyy-MM-dd'T'HH:mm:ss");
 }
 
