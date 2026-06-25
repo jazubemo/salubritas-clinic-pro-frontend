@@ -19,6 +19,7 @@ interface AppointmentContextType {
   appointments: AppointmentEvent[];
   loading: boolean;
   setAppointments: Dispatch<SetStateAction<AppointmentEvent[]>>;
+  handleSelect: (selectInfo: DateSelectArg) => void;
 }
 
 export const AppointmentContext = createContext<AppointmentContextType | null>(
@@ -120,7 +121,7 @@ export function AppointmentProvider({ children }: AppointmentProviderProps) {
   console.log("appointments", appointments);
 
   return (
-    <AppointmentContext value={{ appointments, loading, setAppointments }}>
+    <AppointmentContext value={{ appointments, loading, setAppointments, handleSelect }}>
       {children}
     </AppointmentContext>
   );

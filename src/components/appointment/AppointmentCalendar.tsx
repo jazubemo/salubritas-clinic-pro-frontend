@@ -1,16 +1,13 @@
 "use client";
 
-import React, { use, useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import multiMonthPlugin from "@fullcalendar/multimonth";
 import interactionPlugin from "@fullcalendar/interaction";
 
-import { Appointment } from "@/__generated__/graphql";
 import { DateSelectArg } from "@fullcalendar/core/index.js";
-import { AppointmentEvent } from "@/common/types/AppointmentEvent";
-import { ONE_HOUR_IN_MILLISECONDS } from "@/common/constants/time";
 import { useAppointments } from "@/hooks/useAppointments";
 
 interface AppointmentCalendarProps {
@@ -18,7 +15,7 @@ interface AppointmentCalendarProps {
 }
 
 export default function Calendar({ clinicId }: AppointmentCalendarProps) {
-  const { appointments, loading, error } = useAppointments();
+  const { appointments, loading, error, handleSelect } = useAppointments();
 
 
   const getTimeOneHourAgo = () => {
