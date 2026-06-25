@@ -28,9 +28,13 @@ export const AppointmentContext = createContext<AppointmentContextType | null>(
 
 interface AppointmentProviderProps {
   children: ReactNode;
+  clinicId: string;
 }
 
-export function AppointmentProvider({ children }: AppointmentProviderProps) {
+export function AppointmentProvider({ children, clinicId }: AppointmentProviderProps) {
+  const confirmedAppointmentColor = "#0B8043";
+  const pendingAppointmentColor = "#617480";
+
   const [appointments, setAppointments] = useState<AppointmentEvent[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -45,12 +49,14 @@ export function AppointmentProvider({ children }: AppointmentProviderProps) {
       title: appointment.patientName,
       start: formatToAppTimezone(appointment.startTime),
       end: formatToAppTimezone(appointment.endTime),
+      backgroundColor: appointment.status === "PENDING" ? pendingAppointmentColor : confirmedAppointmentColor,
       ...appointment,
     }));
   };
 
   useEffect(() => {
     async function fetchAppointments() {
+      setLoading(true);
       //if (!activeClinicId || !startRange || !endRange) return; // Guard clause
 
       try {
@@ -61,16 +67,17 @@ export function AppointmentProvider({ children }: AppointmentProviderProps) {
             endRange: "2026-06-25T23:59:59.999",
           },
         });
+        console.log('result', result);
 
         if (result.data?.appointments) {
           setAppointments(
             transformToAppointmentEvents(result.data.appointments),
           );
+          setLoading(false);
         }
       } catch (err) {
+        if (err instanceof Error && err.name === "AbortError") return;
         console.error("Failed to fetch appointments:", err);
-      } finally {
-        setLoading(false);
       }
     }
 
@@ -91,9 +98,6 @@ export function AppointmentProvider({ children }: AppointmentProviderProps) {
 
     const patientName = prompt("Enter Patient Name:");
     selectInfo.view.calendar.unselect();
-
-    const confirmedAppointmentColor = "#0B8043";
-    const pendingAppointmentColor = "#617480";
 
     if (patientName) {
       const newAppointment: AppointmentEvent = {
@@ -118,10 +122,11 @@ export function AppointmentProvider({ children }: AppointmentProviderProps) {
       setAppointments((prev) => [...prev, newAppointment]);
     }
   };
-  console.log("appointments", appointments);
 
   return (
-    <AppointmentContext value={{ appointments, loading, setAppointments, handleSelect }}>
+    <AppointmentContext
+      value={{ appointments, loading, setAppointments, handleSelect }}
+    >
       {children}
     </AppointmentContext>
   );

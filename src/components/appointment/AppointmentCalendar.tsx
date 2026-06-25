@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -9,14 +9,34 @@ import interactionPlugin from "@fullcalendar/interaction";
 
 import { DateSelectArg } from "@fullcalendar/core/index.js";
 import { useAppointments } from "@/hooks/useAppointments";
+import { DEFAULT_APP_TIMEZONE } from "@/common/constants/timezone";
+import CalendarSkeleton from "./CalendarSkeleton";
+import { CalendarViewType } from "./interfaces/CalendarViewType";
 
 interface AppointmentCalendarProps {
   clinicId: string;
 }
 
-export default function Calendar({ clinicId }: AppointmentCalendarProps) {
-  const { appointments, loading, error, handleSelect } = useAppointments();
+const CALENDAR_VIEW_MAP: Record<string, CalendarViewType> = {
+  multiMonthYear: "year",
+  dayGridMonth: "month",
+  timeGridWeek: "week",
+  timeGridDay: "day",
+};
 
+export default function Calendar({ clinicId }: AppointmentCalendarProps) {
+  const {
+    appointments,
+    loading: isLoading,
+    error,
+    handleSelect,
+  } = useAppointments();
+  console.log('isLoading', isLoading);
+
+  const calendarRef = useRef<FullCalendar>(null);
+
+  const [currentView, setCurrentView] = useState<CalendarViewType>("day");
+  console.log("currentView", currentView);
 
   const getTimeOneHourAgo = () => {
     const now = new Date();
@@ -31,10 +51,22 @@ export default function Calendar({ clinicId }: AppointmentCalendarProps) {
     return `${hours}:${minutes}:00`;
   }, []);
 
+  const handleDatesSet = (arg: any) => {
+    const fullCalendarView = arg.view.type;
+    const simplifiedView = CALENDAR_VIEW_MAP[fullCalendarView] || "day"; 
+    
+    setCurrentView(simplifiedView);
+  };
+
+  if (isLoading) {
+    return <CalendarSkeleton view={currentView} />;
+  }
+
   return (
     <div className="w-full h-full flex items-center justify-center p-4 box-border overflow-hidden">
       <div className="w-full max-w-full h-full max-h-full">
         <FullCalendar
+          ref={calendarRef}
           plugins={[
             dayGridPlugin,
             timeGridPlugin,
@@ -70,9 +102,10 @@ export default function Calendar({ clinicId }: AppointmentCalendarProps) {
           nowIndicator={true}
           scrollTime={currentTimeOneHourAgoFormatted}
           scrollTimeReset={false}
-          timeZone="America/Tegucigalpa"
+          timeZone={DEFAULT_APP_TIMEZONE}
           selectable={true}
           select={(selectInfo: DateSelectArg) => handleSelect(selectInfo)}
+          datesSet={handleDatesSet}
         />
       </div>
     </div>
