@@ -62,7 +62,7 @@ export function AppointmentProvider({ children, clinicId }: AppointmentProviderP
       try {
         const result = await getAppointments({
           variables: {
-            activeClinicId: "6a19b5271f1ed3c15e0936d7",
+            activeClinicId: clinicId,
             startRange: "2026-06-25T00:00:00.000",
             endRange: "2026-06-25T23:59:59.999",
           },
