@@ -1,10 +1,14 @@
 import { Appointment } from "@/__generated__/graphql";
 import { ONE_HOUR_IN_MILLISECONDS } from "@/common/constants/time";
+import { DEFAULT_APP_TIMEZONE } from "@/common/constants/timezone";
 import { formatToAppTimezone } from "@/common/timezone/formatToAppTimezone";
 import { AppointmentEvent } from "@/common/types/AppointmentEvent";
+import { CalendarViewType } from "@/components/appointment/interfaces/CalendarViewType";
+import { ActiveViewRange } from "@/components/appointment/interfaces/ActiveViewRange";
 import { AppointmentsQuery } from "@/graphql/queries/findAppointments";
 import { useLazyQuery } from "@apollo/client/react";
 import { DateSelectArg } from "@fullcalendar/core/index.js";
+import { DateTime } from "luxon";
 
 import {
   createContext,
@@ -20,6 +24,10 @@ interface AppointmentContextType {
   loading: boolean;
   setAppointments: Dispatch<SetStateAction<AppointmentEvent[]>>;
   handleSelect: (selectInfo: DateSelectArg) => void;
+  setCurrentView: Dispatch<
+    SetStateAction<ActiveViewRange>
+  >;
+  currentView: ActiveViewRange;
 }
 
 export const AppointmentContext = createContext<AppointmentContextType | null>(
@@ -31,15 +39,27 @@ interface AppointmentProviderProps {
   clinicId: string;
 }
 
-export function AppointmentProvider({ children, clinicId }: AppointmentProviderProps) {
+export function AppointmentProvider({
+  children,
+  clinicId,
+}: AppointmentProviderProps) {
   const confirmedAppointmentColor = "#0B8043";
   const pendingAppointmentColor = "#617480";
 
   const [appointments, setAppointments] = useState<AppointmentEvent[]>([]);
   const [loading, setLoading] = useState(true);
+  const [currentView, setCurrentView] = useState<ActiveViewRange>(() => {
+    const nowLocal = DateTime.now().setZone(DEFAULT_APP_TIMEZONE);
 
-  const [getAppointments, { loading: loadingAppointments, error }] =
-    useLazyQuery(AppointmentsQuery);
+    return {
+      start: nowLocal.startOf("day").toISODate() + "T00:00:00",
+      end: nowLocal.endOf("day").toISODate() + "T23:59:59",
+      type: "day",
+    };
+  });
+  console.log("currentView", currentView);
+
+  const [getAppointments] = useLazyQuery(AppointmentsQuery);
 
   const transformToAppointmentEvents = (
     appointments: Appointment[],
@@ -49,7 +69,10 @@ export function AppointmentProvider({ children, clinicId }: AppointmentProviderP
       title: appointment.patientName,
       start: formatToAppTimezone(appointment.startTime),
       end: formatToAppTimezone(appointment.endTime),
-      backgroundColor: appointment.status === "PENDING" ? pendingAppointmentColor : confirmedAppointmentColor,
+      backgroundColor:
+        appointment.status === "PENDING"
+          ? pendingAppointmentColor
+          : confirmedAppointmentColor,
       ...appointment,
     }));
   };
@@ -57,17 +80,19 @@ export function AppointmentProvider({ children, clinicId }: AppointmentProviderP
   useEffect(() => {
     async function fetchAppointments() {
       setLoading(true);
-      //if (!activeClinicId || !startRange || !endRange) return; // Guard clause
+      const { start: startRange, end: endRange } = currentView;
+
+      if (!clinicId || !startRange || !endRange) return; // Guard clause
 
       try {
         const result = await getAppointments({
           variables: {
             activeClinicId: clinicId,
-            startRange: "2026-06-25T00:00:00.000",
-            endRange: "2026-06-25T23:59:59.999",
+            startRange: startRange,
+            endRange: endRange,
           },
         });
-        console.log('result', result);
+        console.log("result", result);
 
         if (result.data?.appointments) {
           setAppointments(
@@ -82,7 +107,7 @@ export function AppointmentProvider({ children, clinicId }: AppointmentProviderP
     }
 
     fetchAppointments();
-  }, []);
+  }, [currentView, clinicId]);
 
   const handleSelect = (selectInfo: DateSelectArg) => {
     const durationInMinutes =
@@ -125,7 +150,14 @@ export function AppointmentProvider({ children, clinicId }: AppointmentProviderP
 
   return (
     <AppointmentContext
-      value={{ appointments, loading, setAppointments, handleSelect }}
+      value={{
+        appointments,
+        loading,
+        setAppointments,
+        handleSelect,
+        setCurrentView,
+        currentView,
+      }}
     >
       {children}
     </AppointmentContext>

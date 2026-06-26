@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useRef, useState } from "react";
+import React, { useMemo, useRef } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -30,13 +30,12 @@ export default function Calendar({ clinicId }: AppointmentCalendarProps) {
     loading: isLoading,
     error,
     handleSelect,
+    setCurrentView,
+    currentView,
   } = useAppointments();
   console.log("isLoading", isLoading);
 
   const calendarRef = useRef<FullCalendar>(null);
-
-  const [currentView, setCurrentView] = useState<CalendarViewType>("day");
-  console.log("currentView", currentView);
 
   const getTimeOneHourAgo = () => {
     const now = new Date();
@@ -52,25 +51,27 @@ export default function Calendar({ clinicId }: AppointmentCalendarProps) {
   }, []);
 
   const handleDatesSet = (arg: any) => {
-    const viewStart  = arg.view.calendar.formatIso(arg.view.currentStart);
+    const viewStart = arg.view.calendar.formatIso(arg.view.currentStart);
     const viewEnd = arg.view.calendar.formatIso(arg.view.currentEnd);
 
-    console.log("startUserCalendarRange", viewStart);
-    console.log("endUserCalendarRange", viewEnd);
-
-    // view type
     const fullCalendarViewType = arg.view.type;
     const simplifiedView = CALENDAR_VIEW_MAP[fullCalendarViewType] || "day";
+    console.log('simplifiedView', simplifiedView);
 
-    setCurrentView(simplifiedView);
+    setCurrentView({
+      start: viewStart,
+      end: viewEnd,
+      type: simplifiedView,
+    });
   };
-
-  if (isLoading) {
-    return <CalendarSkeleton view={currentView} />;
-  }
 
   return (
     <div className="w-full h-full flex items-center justify-center p-4 box-border overflow-hidden">
+      {isLoading && (
+        <div className="absolute inset-0 z-50 bg-white p-4">
+          <CalendarSkeleton view={currentView.type} />
+        </div>
+      )}
       <div className="w-full max-w-full h-full max-h-full">
         <FullCalendar
           ref={calendarRef}
