@@ -36,11 +36,11 @@ export type AppointmentsQuery = { appointments: Array<{ _id: string, clinicId: s
 export type GetMeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetMeQuery = { getMe: { _id: string, authId: string, dni: string, email: string | null, firstName: string, lastName: string, clinicMemberships: Array<{ name: string, roles: Array<Role>, status: UserStatus, clinicId: string }> } | null };
+export type GetMeQuery = { getMe: { _id: string, authId: string, dni: string, email: string | null, firstName: string, lastName: string, clinicMemberships: Array<{ name: string, roles: Array<Role>, status: UserStatus, clinicId: string, availabilities: Array<{ daysOfWeek: Array<number>, endTime: string, startTime: string }> | null }> } | null };
 
 
 export const AppointmentsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Appointments"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"activeClinicId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"endRange"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"startRange"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"appointments"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"activeClinicId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"activeClinicId"}}},{"kind":"Argument","name":{"kind":"Name","value":"endRange"},"value":{"kind":"Variable","name":{"kind":"Name","value":"endRange"}}},{"kind":"Argument","name":{"kind":"Name","value":"startRange"},"value":{"kind":"Variable","name":{"kind":"Name","value":"startRange"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"clinicId"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"doctorId"}},{"kind":"Field","name":{"kind":"Name","value":"doctorName"}},{"kind":"Field","name":{"kind":"Name","value":"endTime"}},{"kind":"Field","name":{"kind":"Name","value":"isNewPatient"}},{"kind":"Field","name":{"kind":"Name","value":"patientId"}},{"kind":"Field","name":{"kind":"Name","value":"patientName"}},{"kind":"Field","name":{"kind":"Name","value":"reason"}},{"kind":"Field","name":{"kind":"Name","value":"startTime"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]}}]} as unknown as DocumentNode<AppointmentsQuery, AppointmentsQueryVariables>;
-export const GetMeDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetMe"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getMe"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"authId"}},{"kind":"Field","name":{"kind":"Name","value":"dni"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"clinicMemberships"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"roles"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"clinicId"}}]}}]}}]}}]} as unknown as DocumentNode<GetMeQuery, GetMeQueryVariables>;
+export const GetMeDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetMe"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getMe"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"authId"}},{"kind":"Field","name":{"kind":"Name","value":"dni"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"clinicMemberships"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"roles"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"clinicId"}},{"kind":"Field","name":{"kind":"Name","value":"availabilities"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"daysOfWeek"}},{"kind":"Field","name":{"kind":"Name","value":"endTime"}},{"kind":"Field","name":{"kind":"Name","value":"startTime"}}]}}]}}]}}]}}]} as unknown as DocumentNode<GetMeQuery, GetMeQueryVariables>;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: { input: string; output: string; }
@@ -91,6 +91,7 @@ export enum AppointmentStatus {
 
 export type ClinicMembership = {
   __typename?: 'ClinicMembership';
+  availabilities?: Maybe<Array<DoctorAvailability>>;
   clinicId: Scalars['ID']['output'];
   name: Scalars['String']['output'];
   roles: Array<Role>;
@@ -111,6 +112,13 @@ export type CreateAppointmentInput = {
   reason?: InputMaybe<Scalars['String']['input']>;
   startTime: Scalars['DateTime']['input'];
   status: AppointmentStatus;
+};
+
+export type DoctorAvailability = {
+  __typename?: 'DoctorAvailability';
+  daysOfWeek: Array<Scalars['Int']['output']>;
+  endTime: Scalars['String']['output'];
+  startTime: Scalars['String']['output'];
 };
 
 export type Mutation = {
@@ -135,7 +143,7 @@ export type MutationUpdateAppointmentArgs = {
 export type Query = {
   __typename?: 'Query';
   appointments: Array<Appointment>;
-  findAll: Array<User>;
+  doctors: Array<User>;
   getHello: Scalars['String']['output'];
   getMe?: Maybe<User>;
 };
@@ -150,7 +158,7 @@ export type QueryAppointmentsArgs = {
 };
 
 
-export type QueryFindAllArgs = {
+export type QueryDoctorsArgs = {
   activeClinicId: Scalars['String']['input'];
 };
 

@@ -15,11 +15,11 @@ import type { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-
  */
 type Documents = {
     "\n  query Appointments(\n    $activeClinicId: String!\n    $endRange: String!\n    $startRange: String!\n  ) {\n    appointments(\n      activeClinicId: $activeClinicId\n      endRange: $endRange\n      startRange: $startRange\n    ) {\n      _id\n      clinicId\n      createdAt\n      doctorId\n      doctorName\n      endTime\n      isNewPatient\n      patientId\n      patientName\n      reason\n      startTime\n      status\n      updatedAt\n    }\n  }\n": typeof types.AppointmentsDocument,
-    "\n  query GetMe {\n    getMe {\n      _id\n      authId\n      dni\n      email\n      firstName\n      lastName\n      clinicMemberships {\n        name\n        roles\n        status\n        clinicId\n      }\n    }\n  }\n": typeof types.GetMeDocument,
+    "\n  query GetMe {\n    getMe {\n      _id\n      authId\n      dni\n      email\n      firstName\n      lastName\n      clinicMemberships {\n        name\n        roles\n        status\n        clinicId\n        availabilities {\n          daysOfWeek\n          endTime\n          startTime\n        }\n      }\n    }\n  }\n": typeof types.GetMeDocument,
 };
 const documents: Documents = {
     "\n  query Appointments(\n    $activeClinicId: String!\n    $endRange: String!\n    $startRange: String!\n  ) {\n    appointments(\n      activeClinicId: $activeClinicId\n      endRange: $endRange\n      startRange: $startRange\n    ) {\n      _id\n      clinicId\n      createdAt\n      doctorId\n      doctorName\n      endTime\n      isNewPatient\n      patientId\n      patientName\n      reason\n      startTime\n      status\n      updatedAt\n    }\n  }\n": types.AppointmentsDocument,
-    "\n  query GetMe {\n    getMe {\n      _id\n      authId\n      dni\n      email\n      firstName\n      lastName\n      clinicMemberships {\n        name\n        roles\n        status\n        clinicId\n      }\n    }\n  }\n": types.GetMeDocument,
+    "\n  query GetMe {\n    getMe {\n      _id\n      authId\n      dni\n      email\n      firstName\n      lastName\n      clinicMemberships {\n        name\n        roles\n        status\n        clinicId\n        availabilities {\n          daysOfWeek\n          endTime\n          startTime\n        }\n      }\n    }\n  }\n": types.GetMeDocument,
 };
 
 /**
@@ -43,7 +43,7 @@ export function graphql(source: "\n  query Appointments(\n    $activeClinicId: S
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query GetMe {\n    getMe {\n      _id\n      authId\n      dni\n      email\n      firstName\n      lastName\n      clinicMemberships {\n        name\n        roles\n        status\n        clinicId\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetMe {\n    getMe {\n      _id\n      authId\n      dni\n      email\n      firstName\n      lastName\n      clinicMemberships {\n        name\n        roles\n        status\n        clinicId\n      }\n    }\n  }\n"];
+export function graphql(source: "\n  query GetMe {\n    getMe {\n      _id\n      authId\n      dni\n      email\n      firstName\n      lastName\n      clinicMemberships {\n        name\n        roles\n        status\n        clinicId\n        availabilities {\n          daysOfWeek\n          endTime\n          startTime\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetMe {\n    getMe {\n      _id\n      authId\n      dni\n      email\n      firstName\n      lastName\n      clinicMemberships {\n        name\n        roles\n        status\n        clinicId\n        availabilities {\n          daysOfWeek\n          endTime\n          startTime\n        }\n      }\n    }\n  }\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};

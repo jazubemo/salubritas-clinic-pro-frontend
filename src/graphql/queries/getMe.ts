@@ -14,6 +14,11 @@ export const GET_ME = gql`
         roles
         status
         clinicId
+        availabilities {
+          daysOfWeek
+          endTime
+          startTime
+        }
       }
     }
   }
