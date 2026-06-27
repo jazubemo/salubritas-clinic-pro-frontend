@@ -1,19 +1,12 @@
 import { gql } from "@apollo/client";
 
-export const GET_ME = gql`
-  query GetMe {
-    getMe {
-      _id
-      authId
-      dni
+export const DOCTORS_QUERY = gql`
+  query Doctors($activeClinicId: String!) {
+    doctors(activeClinicId: $activeClinicId) {
       email
       firstName
       lastName
       clinicMemberships {
-        name
-        roles
-        status
-        clinicId
         shifts {
           daysOfWeek
           endTime

@@ -1,5 +1,6 @@
 "use client";
 
+import { MINUTES_IN_AN_HOUR } from "@/common/constants/time";
 import React, { useState, useEffect } from "react";
 
 interface Doctor {
@@ -33,27 +34,37 @@ export default function CreateAppointmentModal({
 
   //const [createAppointment, { loading, error }] = useMutation(CREATE_APPOINTMENT);
 
-  // 1. Time Interval Slot Generator (Standard 24h format)
+  // Helper to convert "HH:MM" string to total minutes
+  const timeStringToMinutes = (timeString: string): number => {
+    const [hours, minutes] = timeString.split(":").map(Number);
+    return hours * MINUTES_IN_AN_HOUR + minutes;
+  };
+
+  // Helper to format total minutes back to "HH:MM"
+  const minutesToTimeString = (totalMinutes: number): string => {
+    const hours = Math.floor(totalMinutes / MINUTES_IN_AN_HOUR);
+    const minutes = totalMinutes % MINUTES_IN_AN_HOUR;
+
+    const pad = (num: number) => num.toString().padStart(2, "0");
+    return `${pad(hours)}:${pad(minutes)}`;
+  };
+
+  // Main Function: Single Responsibility, High Readability
   const generateSlots = (
     start: string,
     end: string,
     interval: number,
   ): string[] => {
     const slots: string[] = [];
-    const [startH, startM] = start.split(":").map(Number);
-    const [endH, endM] = end.split(":").map(Number);
 
-    let currentMins = startH * 60 + startM;
-    const endMins = endH * 60 + endM;
+    let currentMins = timeStringToMinutes(start);
+    const endMins = timeStringToMinutes(end);
 
     while (currentMins + interval <= endMins) {
-      const h = Math.floor(currentMins / 60)
-        .toString()
-        .padStart(2, "0");
-      const m = (currentMins % 60).toString().padStart(2, "0");
-      slots.push(`${h}:${m}`);
+      slots.push(minutesToTimeString(currentMins));
       currentMins += interval;
     }
+
     return slots;
   };
 

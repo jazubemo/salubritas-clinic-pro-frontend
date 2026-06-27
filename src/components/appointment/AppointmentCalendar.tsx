@@ -13,6 +13,7 @@ import { DEFAULT_APP_TIMEZONE } from "@/common/constants/timezone";
 import CalendarSkeleton from "./CalendarSkeleton";
 import { CalendarViewType } from "./interfaces/CalendarViewType";
 import CreateAppointmentModal from "./create-appointment/CreateAppointmentModal";
+import { useDoctors } from "@/hooks/useDoctors";
 
 interface AppointmentCalendarProps {
   clinicId: string;
@@ -37,6 +38,9 @@ export default function Calendar({ clinicId }: AppointmentCalendarProps) {
     onClose,
   } = useAppointments();
   console.log("isLoading", isLoading);
+
+  const { doctors, loading: isLoadingDoctors } = useDoctors();
+  console.log('doctors', doctors);
   const calendarRef = useRef<FullCalendar>(null);
 
   const getTimeOneHourAgo = () => {
