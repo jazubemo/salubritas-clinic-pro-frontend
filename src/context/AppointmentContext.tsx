@@ -18,16 +18,17 @@ import {
   SetStateAction,
   ReactNode,
 } from "react";
+import { toast } from "sonner";
 
 interface AppointmentContextType {
   appointments: AppointmentEvent[];
   loading: boolean;
   setAppointments: Dispatch<SetStateAction<AppointmentEvent[]>>;
   handleSelect: (selectInfo: DateSelectArg) => void;
-  setCurrentView: Dispatch<
-    SetStateAction<ActiveViewRange>
-  >;
+  setCurrentView: Dispatch<SetStateAction<ActiveViewRange>>;
   currentView: ActiveViewRange;
+  isModalOpen: boolean;
+  onClose: () => void;
 }
 
 export const AppointmentContext = createContext<AppointmentContextType | null>(
@@ -57,6 +58,13 @@ export function AppointmentProvider({
       type: "day",
     };
   });
+
+  //modal
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const onClose = () => {
+    setIsModalOpen(false);
+  };
   console.log("currentView", currentView);
 
   const [getAppointments] = useLazyQuery(AppointmentsQuery);
@@ -114,38 +122,40 @@ export function AppointmentProvider({
       selectInfo.end.getTime() - selectInfo.start.getTime();
     const durationInHours = durationInMinutes / ONE_HOUR_IN_MILLISECONDS;
 
-    // 2. Enforce the 1-hour maximum clinic rule
+    // Enforce the 1-hour maximum clinic rule
     if (durationInHours > 1) {
-      alert("Clinic rules limit appointments to a maximum of 1 hour.");
+      toast.error("Invalid Duration", {
+        description: "Please select a time slot of 1 hour or less.",
+      });
+
       selectInfo.view.calendar.unselect();
       return;
     }
 
-    const patientName = prompt("Enter Patient Name:");
-    selectInfo.view.calendar.unselect();
+    setIsModalOpen(true);
 
-    if (patientName) {
-      const newAppointment: AppointmentEvent = {
-        id: crypto.randomUUID(),
-        _id: crypto.randomUUID(),
-        title: patientName,
-        start: selectInfo.startStr,
-        end: selectInfo.endStr,
-        clinicId: clinicId,
-        startTime: selectInfo.startStr, // e.g., "2026-06-21T10:00:00"
-        endTime: selectInfo.endStr, // e.g., "2026-06-21T11:00:00"
-        status: "PENDING",
-        isNewPatient: false,
-        reason: "Routine Checkup",
-        patientId: "6a30562acbc138294d977b46",
-        patientName: "Henry Altman",
-        doctorId: "6a3054facbc138294d977b30",
-        doctorName: "Miranda Bailey",
-        backgroundColor: confirmedAppointmentColor,
-      };
+    // if (patientName) {
+    //   const newAppointment: AppointmentEvent = {
+    //     id: crypto.randomUUID(),
+    //     _id: crypto.randomUUID(),
+    //     title: patientName,
+    //     start: selectInfo.startStr,
+    //     end: selectInfo.endStr,
+    //     clinicId: clinicId,
+    //     startTime: selectInfo.startStr, // e.g., "2026-06-21T10:00:00"
+    //     endTime: selectInfo.endStr, // e.g., "2026-06-21T11:00:00"
+    //     status: "PENDING",
+    //     isNewPatient: false,
+    //     reason: "Routine Checkup",
+    //     patientId: "6a30562acbc138294d977b46",
+    //     patientName: "Henry Altman",
+    //     doctorId: "6a3054facbc138294d977b30",
+    //     doctorName: "Miranda Bailey",
+    //     backgroundColor: confirmedAppointmentColor,
+    //   };
 
-      setAppointments((prev) => [...prev, newAppointment]);
-    }
+    //   setAppointments((prev) => [...prev, newAppointment]);
+    // }
   };
 
   return (
@@ -157,6 +167,8 @@ export function AppointmentProvider({
         handleSelect,
         setCurrentView,
         currentView,
+        isModalOpen,
+        onClose,
       }}
     >
       {children}

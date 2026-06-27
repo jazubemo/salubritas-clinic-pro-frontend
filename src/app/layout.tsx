@@ -6,6 +6,7 @@ import globalBackground from "../../public/generalBackground.jpg";
 import ApolloGraphQLProvider from "@/providers/ApolloGraphQLProvider";
 import StoreProvider from "./../providers/StoreProvider";
 import FirebaseAuthProvider from "@/providers/FirebaseAuthProvider";
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   title: "Salubritas Clinic Pro",
@@ -32,6 +33,7 @@ export default function RootLayout({
           />
         </div>
         <div className="absolute inset-0 bg-black/50 z-10" />
+        <Toaster position="top-right" richColors /> 
 
         <ApolloGraphQLProvider>
           <StoreProvider>

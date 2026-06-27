@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useRef } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -12,6 +12,7 @@ import { useAppointments } from "@/hooks/useAppointments";
 import { DEFAULT_APP_TIMEZONE } from "@/common/constants/timezone";
 import CalendarSkeleton from "./CalendarSkeleton";
 import { CalendarViewType } from "./interfaces/CalendarViewType";
+import CreateAppointmentModal from "./create-appointment/CreateAppointmentModal";
 
 interface AppointmentCalendarProps {
   clinicId: string;
@@ -32,9 +33,10 @@ export default function Calendar({ clinicId }: AppointmentCalendarProps) {
     handleSelect,
     setCurrentView,
     currentView,
+    isModalOpen,
+    onClose,
   } = useAppointments();
   console.log("isLoading", isLoading);
-
   const calendarRef = useRef<FullCalendar>(null);
 
   const getTimeOneHourAgo = () => {
@@ -115,6 +117,7 @@ export default function Calendar({ clinicId }: AppointmentCalendarProps) {
           select={(selectInfo: DateSelectArg) => handleSelect(selectInfo)}
           datesSet={handleDatesSet}
         />
+        <CreateAppointmentModal isOpen={isModalOpen} onClose={onClose} clinicId={clinicId} doctorsList={[]}  />
       </div>
     </div>
   );
