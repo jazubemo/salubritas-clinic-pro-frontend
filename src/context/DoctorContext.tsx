@@ -13,25 +13,39 @@ import {
 import { toast } from "sonner";
 
 interface DoctorContextType {
-  doctors: Partial<User>[];
+  doctors: Doctor[];
   loading: boolean;
 }
 
 export const DoctorContext = createContext<DoctorContextType | null>(null);
+
+interface Doctor {
+  userId: string;
+  fullName: string;
+}
 
 interface DoctorProviderProps {
   children: ReactNode;
   clinicId: string;
 }
 
-export function DoctorProvider({
-  children,
-  clinicId,
-}: DoctorProviderProps) {
-  const [doctors, setDoctors] = useState<Partial<User>[]>([]);
+export function DoctorProvider({ children, clinicId }: DoctorProviderProps) {
+  const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const [getDoctors] = useLazyQuery(DOCTORS_QUERY);
+  const [getDoctors] = useLazyQuery(DOCTORS_QUERY, {
+    fetchPolicy: "network-only",
+  });
+
+  const transformToDoctorList = (users: Partial<User[]>): Doctor[] => {
+    return users.map(
+      (user) =>
+        ({
+          userId: user?._id,
+          fullName: `Dr. ${user?.firstName} ${user?.lastName}`,
+        }) as Doctor,
+    );
+  };
 
   useEffect(() => {
     async function fetchDoctors() {
@@ -48,7 +62,7 @@ export function DoctorProvider({
         console.log("result", result);
 
         if (result.data?.doctors) {
-          setDoctors(result.data?.doctors);
+          setDoctors(transformToDoctorList(result.data?.doctors));
           setLoading(false);
         }
       } catch (err) {

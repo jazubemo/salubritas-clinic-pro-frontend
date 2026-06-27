@@ -39,8 +39,6 @@ export default function Calendar({ clinicId }: AppointmentCalendarProps) {
   } = useAppointments();
   console.log("isLoading", isLoading);
 
-  const { doctors, loading: isLoadingDoctors } = useDoctors();
-  console.log('doctors', doctors);
   const calendarRef = useRef<FullCalendar>(null);
 
   const getTimeOneHourAgo = () => {
@@ -62,7 +60,7 @@ export default function Calendar({ clinicId }: AppointmentCalendarProps) {
 
     const fullCalendarViewType = arg.view.type;
     const simplifiedView = CALENDAR_VIEW_MAP[fullCalendarViewType] || "day";
-    console.log('simplifiedView', simplifiedView);
+    console.log("simplifiedView", simplifiedView);
 
     setCurrentView({
       start: viewStart,
@@ -121,7 +119,11 @@ export default function Calendar({ clinicId }: AppointmentCalendarProps) {
           select={(selectInfo: DateSelectArg) => handleSelect(selectInfo)}
           datesSet={handleDatesSet}
         />
-        <CreateAppointmentModal isOpen={isModalOpen} onClose={onClose} clinicId={clinicId} doctorsList={[]}  />
+        <CreateAppointmentModal
+          isOpen={isModalOpen}
+          onClose={onClose}
+          clinicId={clinicId}
+        />
       </div>
     </div>
   );

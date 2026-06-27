@@ -1,35 +1,25 @@
 "use client";
 
 import { MINUTES_IN_AN_HOUR } from "@/common/constants/time";
+import { useDoctors } from "@/hooks/useDoctors";
 import React, { useState, useEffect } from "react";
-
-interface Doctor {
-  userId: string;
-  fullName: string;
-  slotDurationMinutes: number;
-  availabilities: Array<{
-    daysOfWeek: number[];
-    startTime: string;
-    endTime: string;
-  }>;
-}
 
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   clinicId: string;
-  doctorsList: Doctor[]; // Passed down from the parent dashboard component
 }
 
 export default function CreateAppointmentModal({
   isOpen,
   onClose,
   clinicId,
-  doctorsList,
 }: ModalProps) {
   const [selectedDoctorId, setSelectedDoctorId] = useState<string>("");
   const [selectedTime, setSelectedTime] = useState<string>("");
   const [patientSearch, setPatientSearch] = useState<string>("");
+
+  const { doctors: availableDoctors } = useDoctors();
   //const [availableSlots, setAvailableSlots] = useState<string[]>([]);
 
   //const [createAppointment, { loading, error }] = useMutation(CREATE_APPOINTMENT);
@@ -158,7 +148,7 @@ export default function CreateAppointmentModal({
               className="w-full rounded-lg border border-gray-300 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all bg-white"
             >
               <option value="">Select a doctor...</option>
-              {doctorsList.map((doc) => (
+              {availableDoctors.map((doc) => (
                 <option key={doc.userId} value={doc.userId}>
                   {doc.fullName}
                 </option>
