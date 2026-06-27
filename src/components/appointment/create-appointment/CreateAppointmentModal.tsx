@@ -107,10 +107,16 @@ export default function CreateAppointmentModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 transition-opacity">
+    <div
+      onClick={onClose}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 transition-opacity"
+    >
       <div className="bg-white rounded-2xl p-6 w-full max-w-md border border-gray-100 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.15)]">
         {/* Header */}
-        <div className="flex items-center justify-between border-b pb-4">
+        <div
+          onClick={(e) => e.stopPropagation()}
+          className="flex items-center justify-between border-b pb-4"
+        >
           <h3 className="text-xl font-bold text-gray-900">New Appointment</h3>
           <button
             onClick={onClose}
