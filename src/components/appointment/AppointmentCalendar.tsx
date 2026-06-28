@@ -60,7 +60,6 @@ export default function Calendar({ clinicId }: AppointmentCalendarProps) {
 
     const fullCalendarViewType = arg.view.type;
     const simplifiedView = CALENDAR_VIEW_MAP[fullCalendarViewType] || "day";
-    console.log("simplifiedView", simplifiedView);
 
     setCurrentView({
       start: viewStart,

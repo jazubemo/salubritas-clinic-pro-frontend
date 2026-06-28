@@ -29,6 +29,8 @@ interface AppointmentContextType {
   currentView: ActiveViewRange;
   isModalOpen: boolean;
   onClose: () => void;
+  selectedStartTime: string;
+  selectedEndTime: string;
 }
 
 export const AppointmentContext = createContext<AppointmentContextType | null>(
@@ -61,6 +63,11 @@ export function AppointmentProvider({
 
   //modal
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  //calendar
+  // Explicitly typed states for your selected time slots
+  const [selectedStartTime, setSelectedStartTime] = useState<string>("");
+  const [selectedEndTime, setSelectedEndTime] = useState<string>("");
 
   const onClose = () => {
     setIsModalOpen(false);
@@ -132,6 +139,16 @@ export function AppointmentProvider({
       return;
     }
 
+    const rawStart = selectInfo.startStr;
+    const rawEnd = selectInfo.endStr;
+
+    const exactStartTime = DateTime.fromISO(rawStart).toFormat("h:mm a"); // "4:00 PM"
+    const exactEndTime = DateTime.fromISO(rawEnd).toFormat("h:mm a");
+
+    setSelectedStartTime(exactStartTime);
+    setSelectedEndTime(exactEndTime);
+    console.log("rawStart", exactStartTime);
+    console.log("rawEnd", exactEndTime);
     setIsModalOpen(true);
 
     // if (patientName) {
@@ -169,6 +186,8 @@ export function AppointmentProvider({
         currentView,
         isModalOpen,
         onClose,
+        selectedStartTime,
+        selectedEndTime,
       }}
     >
       {children}

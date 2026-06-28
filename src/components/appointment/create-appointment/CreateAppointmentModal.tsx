@@ -1,6 +1,7 @@
 "use client";
 
 import { MINUTES_IN_AN_HOUR } from "@/common/constants/time";
+import { useAppointments } from "@/hooks/useAppointments";
 import { useDoctors } from "@/hooks/useDoctors";
 import React, { useState, useEffect } from "react";
 
@@ -16,10 +17,10 @@ export default function CreateAppointmentModal({
   clinicId,
 }: ModalProps) {
   const [selectedDoctorId, setSelectedDoctorId] = useState<string>("");
-  const [selectedTime, setSelectedTime] = useState<string>("");
   const [patientSearch, setPatientSearch] = useState<string>("");
 
   const { doctors: availableDoctors } = useDoctors();
+  const { selectedStartTime, selectedEndTime } = useAppointments();
   //const [availableSlots, setAvailableSlots] = useState<string[]>([]);
 
   //const [createAppointment, { loading, error }] = useMutation(CREATE_APPOINTMENT);
@@ -58,33 +59,16 @@ export default function CreateAppointmentModal({
     return slots;
   };
 
-  // 2. Recalculate working slots whenever the selected doctor changes
-  //   useEffect(() => {
-
-  //     const doctor = doctorsList.find(d => d.userId === selectedDoctorId);
-  //     if (!doctor) return;
-
-  //     // Extract the day index (0 = Sunday, 1 = Monday...) from the calendar date string
-  //     const dayOfWeek = new Date(selectedDate).getDay();
-
-  //     // Look for a recurring rule matching this weekday inside their clinicMembership
-  //     const matchingRule = doctor.availabilities.find(rule =>
-  //       rule.daysOfWeek.includes(dayOfWeek)
-  //     );
-
-  //     if (matchingRule) {
-  //       const slots = generateSlots(matchingRule.startTime, matchingRule.endTime, doctor.slotDurationMinutes);
-  //       setAvailableSlots(slots);
-  //     } else {
-  //       setAvailableSlots([]); // Doctor is not scheduled to work on this weekday
-  //     }
-  //     setSelectedTime(''); // Reset time selection when doctor updates
-  //   }, [selectedDoctorId, selectedDate, doctorsList]);
-
   // 3. Dispatch Form Submit payload to GraphQL Backend
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedDoctorId || !selectedTime || !patientSearch) return;
+    if (
+      !selectedDoctorId ||
+      !selectedStartTime ||
+      !selectedEndTime ||
+      !patientSearch
+    )
+      return;
 
     try {
       //   await createAppointment({
@@ -111,12 +95,12 @@ export default function CreateAppointmentModal({
       onClick={onClose}
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 transition-opacity"
     >
-      <div className="bg-white rounded-2xl p-6 w-full max-w-md border border-gray-100 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.15)]">
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="bg-white rounded-2xl p-6 w-full max-w-md border border-gray-100 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.15)]"
+      >
         {/* Header */}
-        <div
-          onClick={(e) => e.stopPropagation()}
-          className="flex items-center justify-between border-b pb-4"
-        >
+        <div className="flex items-center justify-between border-b pb-4">
           <h3 className="text-xl font-bold text-gray-900">New Appointment</h3>
           <button
             onClick={onClose}
@@ -143,7 +127,7 @@ export default function CreateAppointmentModal({
           </div>
 
           {/* Step 2: Doctor Selection */}
-          <div>
+          {/* <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Medical Specialist
             </label>
@@ -160,39 +144,40 @@ export default function CreateAppointmentModal({
                 </option>
               ))}
             </select>
+          </div> */}
+          {/* Medical Specialist - Read Only Block */}
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-500 mb-1.5">
+              Medical Specialist
+            </label>
+            <div className="w-full rounded-xl bg-gray-50/80 px-3.5 py-2.5 border border-gray-100 text-sm font-semibold text-gray-700">
+              Dr. Jhon Doe
+            </div>
           </div>
 
-          {/* Step 3: Dynamic Available Hours Grid */}
-          {selectedDoctorId && (
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Available Slots for
-              </label>
+          {/* Compact Inline Selected Time Row */}
+          <div className="mt-4 mb-5 flex items-center justify-between border-b border-gray-100 pb-4 px-1">
+            {/* Left Label */}
+            <span className="text-sm font-medium text-gray-500">
+              Selected Time
+            </span>
 
-              {/* {availableSlots.length > 0 ? (
-                <div className="grid grid-cols-4 gap-2 max-h-40 overflow-y-auto p-1 border rounded-lg bg-gray-50">
-                  {availableSlots.map((time) => (
-                    <button
-                      key={time}
-                      type="button"
-                      onClick={() => setSelectedTime(time)}
-                      className={`rounded-md p-2 text-xs font-semibold border text-center transition-all ${
-                        selectedTime === time
-                          ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
-                          : 'bg-white text-gray-700 border-gray-200 hover:border-blue-400 hover:bg-blue-50'
-                      }`}
-                    >
-                      {time}
-                    </button>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-sm text-red-500 bg-red-50 p-2.5 rounded-lg border border-red-100">
-                  ⚠️ This doctor has no availability configured for this day of the week.
-                </p>
-              )} */}
+            {/* Time Range Caps */}
+            <div className="flex items-center gap-1.5 text-sm font-semibold">
+              {/* Start Time */}
+              <span className="inline-flex items-center rounded-md bg-emerald-50 px-2.5 py-1 text-emerald-700 border border-emerald-100/40">
+                {selectedStartTime}
+              </span>
+
+              {/* Divider Arrow */}
+              <span className="text-gray-300 font-normal mx-0.5">→</span>
+
+              {/* End Time */}
+              <span className="inline-flex items-center rounded-md bg-amber-50 px-2.5 py-1 text-amber-700 border border-amber-100/40">
+                {selectedEndTime}
+              </span>
             </div>
-          )}
+          </div>
 
           {/* Action Buttons */}
           <div className="flex justify-end gap-3 border-t pt-4 mt-6">
@@ -205,7 +190,7 @@ export default function CreateAppointmentModal({
             </button>
             <button
               type="submit"
-              disabled={!selectedTime}
+              disabled={!selectedStartTime || !selectedEndTime}
               className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors shadow-sm"
             >
               {"Confirm Appointment"}
