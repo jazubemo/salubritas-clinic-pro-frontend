@@ -13,6 +13,7 @@ export const metadata: Metadata = {
   description: "Medical Management Platform",
 };
 
+
 export default function RootLayout({
   children,
 }: Readonly<{

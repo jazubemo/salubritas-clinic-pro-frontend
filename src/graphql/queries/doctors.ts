@@ -14,6 +14,9 @@ export const DOCTORS_QUERY = gql`
           startTime
         }
       }
+      doctorProfile {
+        specialty
+      }
     }
   }
 `;
