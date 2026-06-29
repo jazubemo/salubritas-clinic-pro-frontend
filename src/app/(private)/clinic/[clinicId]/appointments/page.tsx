@@ -2,6 +2,7 @@
 
 import AppointmentCalendar from "@/components/appointment/AppointmentCalendar";
 import { withRoleProtection } from "@/components/common/withRoleProtection";
+import CalendarHeaderControls from "@/components/doctor/DoctorDropdown";
 import { AppointmentProvider } from "@/context/AppointmentContext";
 import { DoctorProvider } from "@/context/DoctorContext";
 import { use } from "react";

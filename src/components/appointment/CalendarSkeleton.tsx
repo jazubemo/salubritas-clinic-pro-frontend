@@ -44,13 +44,13 @@ export default function CalendarSkeleton({ view = "day" }: CalendarSkeletonProps
             {/* Simulated Time Slots/Rows for Week/Day views */}
             {isTimeBased ? (
               <div className="flex flex-col gap-3 h-full justify-between py-2">
-                <div className="h-4 w-full bg-blue-100 rounded opacity-60"></div>
+                <div className="h-4 w-full bg-gray-100 rounded opacity-60"></div>
                 <div className="h-4 w-4/5 bg-gray-200 rounded"></div>
-                <div className="h-4 w-full bg-emerald-100 rounded opacity-60"></div>
+                <div className="h-4 w-full bg-gray-100 rounded opacity-60"></div>
               </div>
             ) : (
               /* Simulated Random Events for Month/Year views */
-              index % 4 === 0 && <div className="h-4 w-full bg-blue-100 rounded"></div>
+              index % 4 === 0 && <div className="h-4 w-full bg-gray-100 rounded"></div>
             )}
           </div>
         ))}
