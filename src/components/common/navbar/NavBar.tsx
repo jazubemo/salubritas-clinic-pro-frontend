@@ -26,7 +26,7 @@ export default function Navbar() {
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-white/10 bg-white/5 backdrop-blur-md px-6 py-3">
-      <div className="mx-auto flex max-w-7xl items-center justify-between">
+      <div className="flex max-w-full items-center justify-between">
         <div className="flex items-center gap-8">
           <div className="flex items-center">
             <NavBarLogo />

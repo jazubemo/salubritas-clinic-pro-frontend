@@ -2,7 +2,7 @@
 
 import AppointmentCalendar from "@/components/appointment/AppointmentCalendar";
 import { withRoleProtection } from "@/components/common/withRoleProtection";
-import CalendarHeaderControls from "@/components/doctor/DoctorDropdown";
+import DoctorFilterDropdown from "@/components/doctor/DoctorFilterDropdown";
 import { AppointmentProvider } from "@/context/AppointmentContext";
 import { DoctorProvider } from "@/context/DoctorContext";
 import { use } from "react";
@@ -15,12 +15,16 @@ function AppointmentsPage({ params }: Props) {
   const { clinicId } = use(params);
 
   return (
-    <div className="relative h-full z-30 bg-white flex-grow w-full overflow-hidden relative">
-      <AppointmentProvider clinicId={clinicId}>
-        <DoctorProvider clinicId={clinicId}>
-          <AppointmentCalendar clinicId={clinicId} />
-        </DoctorProvider>
-      </AppointmentProvider>
+    <div className="w-full h-full flex flex-col overflow-hidden">
+      <DoctorProvider clinicId={clinicId}>
+        <DoctorFilterDropdown />
+
+        <div className="relative z-30 flex-1 w-full min-h-0 bg-white overflow-hidden">
+          <AppointmentProvider clinicId={clinicId}>
+            <AppointmentCalendar clinicId={clinicId} />
+          </AppointmentProvider>
+        </div>
+      </DoctorProvider>
     </div>
   );
 }

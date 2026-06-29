@@ -20,7 +20,7 @@
 }
 
 body {
-  background-color: transparent; 
+  background-color: transparent;
   color: var(--color-slate-900);
   font-family: Arial, Helvetica, sans-serif !important;
 }
@@ -35,7 +35,6 @@ body {
 .fc .fc-timegrid-now-indicator-arrow {
   display: none !important;
 }
-
 
 .fc-timegrid-bg-harness .google-style-timeline {
   background: transparent !important;
@@ -53,48 +52,50 @@ body {
 .fc-header-toolbar {
   padding: 12px 24px !important;
   margin-bottom: 0 !important;
-  border-bottom: 1px solid #e3e3e3 !important; 
+  border-bottom: 1px solid #e3e3e3 !important;
   background-color: #ffffff;
 }
 
 /* 2. Global Button Core */
 .fc .fc-button-primary {
   background-color: transparent !important;
-  border: 1px solid #747775 !important;   
-  color: #444746 !important;             
+  border: 1px solid #747775 !important;
+  color: #444746 !important;
   box-shadow: none !important;
   font-weight: 500 !important;
   font-size: 14px !important;
-  letter-spacing: .25px !important;
+  letter-spacing: 0.25px !important;
   text-transform: none !important;
-  transition: background-color 0.2s, color 0.2s !important;
+  transition:
+    background-color 0.2s,
+    color 0.2s !important;
 }
 
 /* 3. The "Today" Button (Pill-shaped, border, independent) */
-.fc .fc-today-button, 
+.fc .fc-today-button,
 .fc .fc-button-primary:disabled {
   border: 1px solid #747775 !important;
-  border-radius: 100px !important;      
+  border-radius: 100px !important;
   padding: 6px 16px !important;
-  opacity: 1 !important;                
+  opacity: 1 !important;
   background-color: #ffffff !important;
   color: #1f1f1f !important;
 }
 .fc .fc-today-button:hover,
 .fc .fc-button-primary:disabled:hover {
-  background-color: #f1f3f4 !important; 
-  color: #1a73e8 !important;            
+  background-color: #f1f3f4 !important;
+  color: #1a73e8 !important;
 }
 
 /* 4. Left/Right Navigation Arrow Group (< >) */
 .fc .fc-button-group {
-  border: none !important;              
+  border: none !important;
   margin-left: 8px !important;
   gap: 2px !important;
 }
 .fc .fc-button-group .fc-button {
-  border: none !important;               
-  border-radius: 50% !important;       
+  border: none !important;
+  border-radius: 50% !important;
   width: 36px !important;
   height: 36px !important;
   padding: 0 !important;
@@ -111,31 +112,33 @@ body {
 
 .fc .fc-header-toolbar .fc-toolbar-chunk:last-child .fc-button-group {
   flex: 1 1 0% !important;
-  border: none !important;  
+  border: none !important;
   border: 1px solid #747775 !important;
   border-radius: 8px !important;
   overflow: hidden !important;
-  display: inline-flex !important;     
+  display: inline-flex !important;
   align-items: center !important;
-  min-width: 200px !important;         
+  min-width: 200px !important;
   background-color: #ffffff !important;
 }
 
-
 .fc .fc-header-toolbar .fc-toolbar-chunk:last-child .fc-button {
-  flex: 1 1 0% !important;                   
+  flex: 1 1 0% !important;
   border: none !important;
   border-radius: 0px !important;
-  padding: 8px 0 !important;          
+  padding: 8px 0 !important;
   font-size: 14px !important;
   font-weight: 500 !important;
   text-align: center !important;
-  white-space: nowrap !important;      
+  white-space: nowrap !important;
   display: flex !important;
   height: 100% !important;
 }
 
-.fc .fc-header-toolbar .fc-toolbar-chunk:last-child .fc-button:not(:last-child) {
+.fc
+  .fc-header-toolbar
+  .fc-toolbar-chunk:last-child
+  .fc-button:not(:last-child) {
   border-right: 1px solid #747775 !important;
 }
 
@@ -144,7 +147,7 @@ body {
   background-color: rgba(26, 115, 232, 0.1) !important;
   color: #1a73e8 !important;
   font-weight: 600 !important;
-  background-image: none !important; 
+  background-image: none !important;
 }
 
 /* Divider line between grouped view buttons */
@@ -155,7 +158,7 @@ body {
 /* Active Selected View Highlight (Turns blue text with subtle background tint) */
 .fc .fc-button-group:last-child .fc-button-active {
   background-color: rgba(26, 115, 232, 0.08) !important;
-  color: #1a73e8 !important;           
+  color: #1a73e8 !important;
   font-weight: 600 !important;
 }
 
@@ -168,7 +171,6 @@ body {
   margin-left: 16px !important;
 }
 
-
 .fc .fc-timegrid-col.fc-day-today {
   background-color: #ffffff !important;
 }
@@ -180,10 +182,3 @@ body {
 .fc td.fc-day-today {
   background-color: transparent !important;
 }
-
-
-
-
-
-
-

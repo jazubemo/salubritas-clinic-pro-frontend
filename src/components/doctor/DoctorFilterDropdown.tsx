@@ -7,7 +7,7 @@ const DOCTORS = [
   { id: "doc-3", name: "Dr. Alex Rivera", specialty: "Cardiology" },
 ];
 
-export default function CalendarHeaderControls() {
+export default function DoctorFilterDropdown() {
   const [selectedDoctor, setSelectedDoctor] = useState(DOCTORS[0]);
   const [isOpen, setIsOpen] = useState(false);
 

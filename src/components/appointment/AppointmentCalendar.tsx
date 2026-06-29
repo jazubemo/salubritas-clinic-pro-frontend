@@ -14,7 +14,7 @@ import CalendarSkeleton from "./CalendarSkeleton";
 import { CalendarViewType } from "./interfaces/CalendarViewType";
 import CreateAppointmentModal from "./create-appointment/CreateAppointmentModal";
 import { useDoctors } from "@/hooks/useDoctors";
-import CalendarHeaderControls from "../doctor/DoctorDropdown";
+import DoctorFilterDropdown from "../doctor/DoctorFilterDropdown";
 
 interface AppointmentCalendarProps {
   clinicId: string;
@@ -70,13 +70,13 @@ export default function Calendar({ clinicId }: AppointmentCalendarProps) {
   };
 
   return (
-    <div className="w-full h-full flex items-center justify-center p-4 box-border overflow-hidden">
+    <div className="relative w-full h-full flex flex-col overflow-hidden p-4 box-border">
       {isLoading && (
         <div className="absolute inset-0 z-50 bg-white p-4">
           <CalendarSkeleton view={currentView.type} />
         </div>
       )}
-      <div className="w-full max-w-full h-full max-h-full">
+      <div className="flex-1 w-full min-h-0">
         <FullCalendar
           ref={calendarRef}
           plugins={[
@@ -86,6 +86,7 @@ export default function Calendar({ clinicId }: AppointmentCalendarProps) {
             interactionPlugin,
           ]}
           initialView="timeGridDay"
+          height="100%"
           headerToolbar={{
             left: "prev,next today",
             center: "title",
@@ -104,10 +105,10 @@ export default function Calendar({ clinicId }: AppointmentCalendarProps) {
             meridiem: "short",
             hour12: true,
           }}
-          height="100%"
           weekends={true}
-          // slotMinTime="08:00:00"
-          // slotMaxTime="16:00:00"
+          slotMinTime="08:00:00"
+          slotMaxTime="16:30:00"
+          handleWindowResize={true} 
           slotDuration="00:15:00"
           allDaySlot={false}
           events={appointments}
