@@ -2,7 +2,7 @@
 
 import AppointmentCalendar from "@/components/appointment/AppointmentCalendar";
 import { withRoleProtection } from "@/components/common/withRoleProtection";
-import DoctorFilterDropdown from "@/components/doctor/DoctorFilterDropdown";
+import DoctorFilterDropdown from "@/components/doctor/DoctorScheduleFilter ";
 import { AppointmentProvider } from "@/context/AppointmentContext";
 import { DoctorProvider } from "@/context/DoctorContext";
 import { use } from "react";

@@ -14,7 +14,7 @@ import CalendarSkeleton from "./CalendarSkeleton";
 import { CalendarViewType } from "./interfaces/CalendarViewType";
 import CreateAppointmentModal from "./create-appointment/CreateAppointmentModal";
 import { useDoctors } from "@/hooks/useDoctors";
-import DoctorFilterDropdown from "../doctor/DoctorFilterDropdown";
+import DoctorFilterDropdown from "../doctor/DoctorScheduleFilter ";
 
 interface AppointmentCalendarProps {
   clinicId: string;

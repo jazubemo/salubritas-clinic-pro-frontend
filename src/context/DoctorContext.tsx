@@ -1,4 +1,4 @@
-import { User } from "@/__generated__/graphql";
+import { Specialty, User } from "@/__generated__/graphql";
 import { DOCTORS_QUERY } from "@/graphql/queries/doctors";
 import { useLazyQuery } from "@apollo/client/react";
 
@@ -22,12 +22,20 @@ export const DoctorContext = createContext<DoctorContextType | null>(null);
 interface Doctor {
   userId: string;
   fullName: string;
+  specialty: string;
 }
 
 interface DoctorProviderProps {
   children: ReactNode;
   clinicId: string;
 }
+
+const DOCTOR_SPECIALTY_MAP: Record<Specialty, string> = {
+  CARDIOTHORACIC_SURGERY: "Cardiothoracic Surgery",
+  GENERAL_SURGERY: "General Surgery",
+  INTERNAL_MEDICINE: "Internal Medicine",
+  PEDIATRIC: "Pediatric",
+};
 
 export function DoctorProvider({ children, clinicId }: DoctorProviderProps) {
   const [doctors, setDoctors] = useState<Doctor[]>([]);
@@ -43,6 +51,9 @@ export function DoctorProvider({ children, clinicId }: DoctorProviderProps) {
         ({
           userId: user?._id,
           fullName: `Dr. ${user?.firstName} ${user?.lastName}`,
+          specialty: user?.doctorProfile?.specialty
+            ? DOCTOR_SPECIALTY_MAP[user?.doctorProfile?.specialty]
+            : "General Physician",
         }) as Doctor,
     );
   };

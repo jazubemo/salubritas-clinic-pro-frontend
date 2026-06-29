@@ -19,7 +19,6 @@ export default function CreateAppointmentModal({
   const [selectedDoctorId, setSelectedDoctorId] = useState<string>("");
   const [patientSearch, setPatientSearch] = useState<string>("");
 
-  const { doctors: availableDoctors } = useDoctors();
   const { selectedStartTime, selectedEndTime } = useAppointments();
   //const [availableSlots, setAvailableSlots] = useState<string[]>([]);
 

@@ -19,6 +19,13 @@ export type Role =
   | 'DOCTOR'
   | 'PATIENT';
 
+/** Doctors specialty */
+export type Specialty =
+  | 'CARDIOTHORACIC_SURGERY'
+  | 'GENERAL_SURGERY'
+  | 'INTERNAL_MEDICINE'
+  | 'PEDIATRIC';
+
 /** The current operational status of the user account. Allowed values: ACTIVE, ARCHIVED. */
 export type UserStatus =
   | 'ACTIVE'
@@ -29,7 +36,7 @@ export type DoctorsQueryVariables = Exact<{
 }>;
 
 
-export type DoctorsQuery = { doctors: Array<{ _id: string, email: string | null, firstName: string, lastName: string, clinicMemberships: Array<{ shifts: Array<{ daysOfWeek: Array<number>, endTime: string, startTime: string }> | null }> }> };
+export type DoctorsQuery = { doctors: Array<{ _id: string, email: string | null, firstName: string, lastName: string, clinicMemberships: Array<{ shifts: Array<{ daysOfWeek: Array<number>, endTime: string, startTime: string }> | null }>, doctorProfile: { specialty: Specialty | null } | null }> };
 
 export type AppointmentsQueryVariables = Exact<{
   activeClinicId: string;
@@ -46,7 +53,7 @@ export type GetMeQueryVariables = Exact<{ [key: string]: never; }>;
 export type GetMeQuery = { getMe: { _id: string, authId: string, dni: string, email: string | null, firstName: string, lastName: string, clinicMemberships: Array<{ name: string, roles: Array<Role>, status: UserStatus, clinicId: string, shifts: Array<{ daysOfWeek: Array<number>, endTime: string, startTime: string }> | null }> } | null };
 
 
-export const DoctorsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Doctors"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"activeClinicId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"doctors"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"activeClinicId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"activeClinicId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"clinicMemberships"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"shifts"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"daysOfWeek"}},{"kind":"Field","name":{"kind":"Name","value":"endTime"}},{"kind":"Field","name":{"kind":"Name","value":"startTime"}}]}}]}}]}}]}}]} as unknown as DocumentNode<DoctorsQuery, DoctorsQueryVariables>;
+export const DoctorsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Doctors"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"activeClinicId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"doctors"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"activeClinicId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"activeClinicId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"clinicMemberships"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"shifts"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"daysOfWeek"}},{"kind":"Field","name":{"kind":"Name","value":"endTime"}},{"kind":"Field","name":{"kind":"Name","value":"startTime"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"doctorProfile"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"specialty"}}]}}]}}]}}]} as unknown as DocumentNode<DoctorsQuery, DoctorsQueryVariables>;
 export const AppointmentsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Appointments"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"activeClinicId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"endRange"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"startRange"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"appointments"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"activeClinicId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"activeClinicId"}}},{"kind":"Argument","name":{"kind":"Name","value":"endRange"},"value":{"kind":"Variable","name":{"kind":"Name","value":"endRange"}}},{"kind":"Argument","name":{"kind":"Name","value":"startRange"},"value":{"kind":"Variable","name":{"kind":"Name","value":"startRange"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"clinicId"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"doctorId"}},{"kind":"Field","name":{"kind":"Name","value":"doctorName"}},{"kind":"Field","name":{"kind":"Name","value":"endTime"}},{"kind":"Field","name":{"kind":"Name","value":"isNewPatient"}},{"kind":"Field","name":{"kind":"Name","value":"patientId"}},{"kind":"Field","name":{"kind":"Name","value":"patientName"}},{"kind":"Field","name":{"kind":"Name","value":"reason"}},{"kind":"Field","name":{"kind":"Name","value":"startTime"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]}}]} as unknown as DocumentNode<AppointmentsQuery, AppointmentsQueryVariables>;
 export const GetMeDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetMe"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getMe"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"authId"}},{"kind":"Field","name":{"kind":"Name","value":"dni"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"clinicMemberships"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"roles"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"clinicId"}},{"kind":"Field","name":{"kind":"Name","value":"shifts"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"daysOfWeek"}},{"kind":"Field","name":{"kind":"Name","value":"endTime"}},{"kind":"Field","name":{"kind":"Name","value":"startTime"}}]}}]}}]}}]}}]} as unknown as DocumentNode<GetMeQuery, GetMeQueryVariables>;
 /** All built-in and custom scalars, mapped to their actual values */
@@ -122,6 +129,16 @@ export type CreateAppointmentInput = {
   status: AppointmentStatus;
 };
 
+export type DoctorProfile = {
+  __typename?: 'DoctorProfile';
+  /** Exact date when the doctor data was created */
+  createdAt?: Maybe<Scalars['DateTime']['output']>;
+  licenseNumber: Scalars['String']['output'];
+  specialty?: Maybe<Specialty>;
+  /** Date when the doctor data was last updated */
+  updatedAt?: Maybe<Scalars['DateTime']['output']>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   createAppointment: Appointment;
@@ -182,6 +199,14 @@ export type Shift = {
   startTime: Scalars['String']['output'];
 };
 
+/** Doctors specialty */
+export enum Specialty {
+  CardiothoracicSurgery = 'CARDIOTHORACIC_SURGERY',
+  GeneralSurgery = 'GENERAL_SURGERY',
+  InternalMedicine = 'INTERNAL_MEDICINE',
+  Pediatric = 'PEDIATRIC'
+}
+
 export type UpdateAppointmentInput = {
   doctorId?: InputMaybe<Scalars['String']['input']>;
   endTime?: InputMaybe<Scalars['DateTime']['input']>;
@@ -202,6 +227,8 @@ export type User = {
   createdAt: Scalars['DateTime']['output'];
   /** The Honduran National Identification Document number. Format: 13 digits without hyphens (e.g., 0801199512345). */
   dni: Scalars['String']['output'];
+  /** Doctor metadata */
+  doctorProfile?: Maybe<DoctorProfile>;
   /** The user's email. It's linked to firebase authentication. */
   email?: Maybe<Scalars['String']['output']>;
   /** The user's given name(s). Includes first and middle names (e.g., 'Carlos Alberto'). */

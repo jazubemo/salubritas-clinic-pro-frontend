@@ -1,3 +1,4 @@
+import { useDoctors } from "@/hooks/useDoctors";
 import React, { useState } from "react";
 
 // Mock data matching your schema naming convention
@@ -7,9 +8,12 @@ const DOCTORS = [
   { id: "doc-3", name: "Dr. Alex Rivera", specialty: "Cardiology" },
 ];
 
-export default function DoctorFilterDropdown() {
+export default function DoctorScheduleFilter() {
   const [selectedDoctor, setSelectedDoctor] = useState(DOCTORS[0]);
   const [isOpen, setIsOpen] = useState(false);
+
+   const { doctors: availableDoctors } = useDoctors();
+   console.log('availableDoctors', availableDoctors);
 
   const handleSelect = (doctor) => {
     setSelectedDoctor(doctor);
@@ -71,19 +75,19 @@ export default function DoctorFilterDropdown() {
             />
 
             <div className="absolute left-1/2 -translate-x-1/2 mt-3 w-[360px] rounded-2xl bg-white border-2 border-gray-100 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.15)] z-20 overflow-hidden py-2">
-              {DOCTORS.map((doctor) => (
+              {availableDoctors.map((doctor) => (
                 <button
-                  key={doctor.id}
+                  key={doctor.userId}
                   onClick={() => handleSelect(doctor)}
                   className={`w-full text-center px-6 py-3.5 text-base transition-colors flex flex-col items-center justify-center gap-1 ${
-                    selectedDoctor.id === doctor.id
+                    selectedDoctor.id === doctor.userId
                       ? "bg-cyan-50 text-cyan-800 font-extrabold"
                       : "text-gray-700 hover:bg-slate-50 font-semibold"
                   }`}
                 >
-                  <span className="text-base">{doctor.name}</span>
+                  <span className="text-base">{doctor.fullName}</span>
                   <span
-                    className={`text-xs uppercase tracking-wider font-bold ${selectedDoctor.id === doctor.id ? "text-cyan-600" : "text-gray-400"}`}
+                    className={`text-xs uppercase tracking-wider font-bold ${selectedDoctor.id === doctor.userId ? "text-cyan-600" : "text-gray-400"}`}
                   >
                     {doctor.specialty}
                   </span>
