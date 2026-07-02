@@ -38,7 +38,8 @@ export default function Calendar({ clinicId }: AppointmentCalendarProps) {
     isModalOpen,
     onClose,
   } = useAppointments();
-  console.log("isLoading", isLoading);
+
+  const { loading: loadingDoctors } = useDoctors();
 
   const calendarRef = useRef<FullCalendar>(null);
 
@@ -71,7 +72,7 @@ export default function Calendar({ clinicId }: AppointmentCalendarProps) {
 
   return (
     <div className="relative w-full h-full flex flex-col overflow-hidden p-4 box-border">
-      {isLoading && (
+      {isLoading || loadingDoctors && (
         <div className="absolute inset-0 z-50 bg-white p-4">
           <CalendarSkeleton view={currentView.type} />
         </div>
