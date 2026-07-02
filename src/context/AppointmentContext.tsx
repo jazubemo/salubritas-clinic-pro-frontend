@@ -19,6 +19,10 @@ import {
   ReactNode,
 } from "react";
 import { toast } from "sonner";
+import { selectClinicByParamsId } from "@/lib/features/auth/authSelectors";
+import { useSelector } from "react-redux";
+import { useAppSelector } from "@/lib/store";
+import { useDoctors } from "@/hooks/useDoctors";
 
 interface AppointmentContextType {
   appointments: AppointmentEvent[];
@@ -63,16 +67,21 @@ export function AppointmentProvider({
 
   //modal
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const currentClinic = useSelector((state) =>
+    selectClinicByParamsId(state, clinicId),
+  );
+  const { user } = useAppSelector((state) => state.auth);
 
   //calendar
   // Explicitly typed states for your selected time slots
   const [selectedStartTime, setSelectedStartTime] = useState<string>("");
   const [selectedEndTime, setSelectedEndTime] = useState<string>("");
 
+  const { selectedDoctor } = useDoctors();
+
   const onClose = () => {
     setIsModalOpen(false);
   };
-  console.log("currentView", currentView);
 
   const [getAppointments] = useLazyQuery(AppointmentsQuery);
 
@@ -92,6 +101,22 @@ export function AppointmentProvider({
     }));
   };
 
+  const getFindAppointmentsVariables = (
+    startRange: string,
+    endRange: string,
+  ) => {
+    const { roles } = currentClinic;
+
+    return {
+      activeClinicId: clinicId,
+      startRange,
+      endRange,
+      ...(roles.includes("PATIENT") && { patientId: user?._id }),
+      ...(roles.includes("DOCTOR") && { doctorId: user?._id }),
+      ...(roles.includes("ADMIN") && { doctorId: selectedDoctor?.userId }),
+    };
+  };
+
   useEffect(() => {
     async function fetchAppointments() {
       setLoading(true);
@@ -101,13 +126,8 @@ export function AppointmentProvider({
 
       try {
         const result = await getAppointments({
-          variables: {
-            activeClinicId: clinicId,
-            startRange: startRange,
-            endRange: endRange,
-          },
+          variables: getFindAppointmentsVariables(startRange, endRange),
         });
-        console.log("result", result);
 
         if (result.data?.appointments) {
           setAppointments(
@@ -122,7 +142,7 @@ export function AppointmentProvider({
     }
 
     fetchAppointments();
-  }, [currentView, clinicId]);
+  }, [currentView, clinicId, selectedDoctor]);
 
   const handleSelect = (selectInfo: DateSelectArg) => {
     const durationInMinutes =
@@ -147,8 +167,6 @@ export function AppointmentProvider({
 
     setSelectedStartTime(exactStartTime);
     setSelectedEndTime(exactEndTime);
-    console.log("rawStart", exactStartTime);
-    console.log("rawEnd", exactEndTime);
     setIsModalOpen(true);
 
     // if (patientName) {
