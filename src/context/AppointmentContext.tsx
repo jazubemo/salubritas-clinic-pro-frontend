@@ -1,15 +1,13 @@
 import { Appointment } from "@/__generated__/graphql";
 import { formatToAppTimezone } from "@/common/timezone/formatToAppTimezone";
 import { AppointmentEvent } from "@/common/types/AppointmentEvent";
-import { AppointmentsQuery } from "@/graphql/queries/findAppointments";
+import { AppointmentsQuery } from "@/graphql/queries/appointments";
 import { useLazyQuery } from "@apollo/client/react";
 
 import {
   createContext,
   useState,
   useEffect,
-  Dispatch,
-  SetStateAction,
   ReactNode,
 } from "react";
 import { selectClinicByParamsId } from "@/lib/features/auth/authSelectors";
@@ -21,7 +19,6 @@ import { useCalendar } from "@/hooks/useCalendar";
 interface AppointmentContextType {
   appointments: AppointmentEvent[];
   loading: boolean;
-  setAppointments: Dispatch<SetStateAction<AppointmentEvent[]>>;
 }
 
 export const AppointmentContext = createContext<AppointmentContextType | null>(
@@ -47,16 +44,12 @@ export function AppointmentProvider({
     selectClinicByParamsId(state, clinicId),
   );
   const { user } = useAppSelector((state) => state.auth);
-
-  //calendar
-   const { currentView, setCurrentView, isModalOpen, onClose } = useCalendar();
-
+  const { currentView } = useCalendar();
   const { selectedDoctor } = useDoctors();
 
+  const [triggerFetchAppointmentsQuery] = useLazyQuery(AppointmentsQuery);
 
-  const [getAppointments] = useLazyQuery(AppointmentsQuery);
-
-  const transformToAppointmentEvents = (
+  const mapAppointmentsToEvents = (
     appointments: Appointment[],
   ): AppointmentEvent[] => {
     return appointments.map((appointment) => ({
@@ -72,7 +65,7 @@ export function AppointmentProvider({
     }));
   };
 
-  const getFindAppointmentsVariables = (
+  const buildQueryVariables = (
     startRange: string,
     endRange: string,
   ) => {
@@ -89,6 +82,8 @@ export function AppointmentProvider({
   };
 
   useEffect(() => {
+    let isMounted = true; 
+
     async function fetchAppointments() {
       setLoading(true);
       const { start: startRange, end: endRange } = currentView;
@@ -96,23 +91,29 @@ export function AppointmentProvider({
       if (!clinicId || !startRange || !endRange) return; // Guard clause
 
       try {
-        const result = await getAppointments({
-          variables: getFindAppointmentsVariables(startRange, endRange),
+        const result = await triggerFetchAppointmentsQuery({
+          variables: buildQueryVariables(startRange, endRange),
         });
 
-        if (result.data?.appointments) {
+        if (isMounted && result.data?.appointments) {
           setAppointments(
-            transformToAppointmentEvents(result.data.appointments),
+            mapAppointmentsToEvents(result.data.appointments),
           );
-          setLoading(false);
+          if (isMounted) setLoading(false);
         }
       } catch (err) {
         if (err instanceof Error && err.name === "AbortError") return;
         console.error("Failed to fetch appointments:", err);
+      } finally {
+        setLoading(false); 
       }
     }
 
     fetchAppointments();
+
+    return () => {
+      isMounted = false;
+    };
   }, [currentView, clinicId, selectedDoctor]);
 
   return (
@@ -120,7 +121,6 @@ export function AppointmentProvider({
       value={{
         appointments,
         loading,
-        setAppointments,
       }}
     >
       {children}

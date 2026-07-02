@@ -3,7 +3,7 @@ import { DEFAULT_APP_TIMEZONE } from "@/common/constants/timezone";
 import { ActiveViewRange } from "@/components/appointment/interfaces/ActiveViewRange";
 import { CalendarViewType } from "@/components/appointment/interfaces/CalendarViewType";
 
-import { DateSelectArg } from "@fullcalendar/core/index.js";
+import { DateSelectArg, DatesSetArg } from "@fullcalendar/core/index.js";
 import { DateTime } from "luxon";
 
 import {
@@ -16,14 +16,14 @@ import {
 import { toast } from "sonner";
 
 interface CalendarContextType {
-  handleSelect: (selectInfo: DateSelectArg) => void;
+  handleTimeSlotSelect: (selectInfo: DateSelectArg) => void;
   setCurrentView: Dispatch<SetStateAction<ActiveViewRange>>;
   currentView: ActiveViewRange;
-  isModalOpen: boolean;
-  onClose: () => void;
+  showCreateAppointment: boolean;
+  closeCreateAppointment: () => void;
   selectedStartTime: string;
   selectedEndTime: string;
-  handleDatesSet: (arg: any) => void
+  handleDatesSet: (arg: DatesSetArg) => void
 }
 
 export const CalendarContext = createContext<CalendarContextType | null>(null);
@@ -50,14 +50,13 @@ export function CalendarProvider({ children }: CalendarProviderProps) {
     };
   });
 
-  //modal
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showCreateAppointment, setShowCreateAppointment ] = useState(false);
 
   const [selectedStartTime, setSelectedStartTime] = useState<string>("");
   const [selectedEndTime, setSelectedEndTime] = useState<string>("");
 
-  const onClose = () => {
-    setIsModalOpen(false);
+  const closeCreateAppointment = () => {
+    setShowCreateAppointment (false);
   };
 
   const handleDatesSet = (arg: any) => {
@@ -74,7 +73,7 @@ export function CalendarProvider({ children }: CalendarProviderProps) {
     });
   };
 
-  const handleSelect = (selectInfo: DateSelectArg) => {
+  const handleTimeSlotSelect = (selectInfo: DateSelectArg) => {
     const durationInMinutes =
       selectInfo.end.getTime() - selectInfo.start.getTime();
     const durationInHours = durationInMinutes / ONE_HOUR_IN_MILLISECONDS;
@@ -97,7 +96,7 @@ export function CalendarProvider({ children }: CalendarProviderProps) {
 
     setSelectedStartTime(exactStartTime);
     setSelectedEndTime(exactEndTime);
-    setIsModalOpen(true);
+    setShowCreateAppointment (true);
 
     // if (patientName) {
     //   const newAppointment: AppointmentEvent = {
@@ -126,11 +125,11 @@ export function CalendarProvider({ children }: CalendarProviderProps) {
   return (
     <CalendarContext
       value={{
-        handleSelect,
+        handleTimeSlotSelect,
         setCurrentView,
         currentView,
-        isModalOpen,
-        onClose,
+        showCreateAppointment,
+        closeCreateAppointment,
         selectedStartTime,
         selectedEndTime,
         handleDatesSet

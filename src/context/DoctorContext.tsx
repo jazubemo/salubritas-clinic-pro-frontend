@@ -50,11 +50,11 @@ export function DoctorProvider({ children, clinicId }: DoctorProviderProps) {
     selectClinicByParamsId(state, clinicId),
   );
 
-  const [getDoctors] = useLazyQuery(DOCTORS_QUERY, {
+  const [triggerFetchDoctorsQuery] = useLazyQuery(DOCTORS_QUERY, {
     fetchPolicy: "network-only",
   });
 
-  const transformToDoctorList = (users: Partial<User[]>): Doctor[] => {
+  const mapToDoctorList = (users: Partial<User[]>): Doctor[] => {
     return users.map(
       (user) =>
         ({
@@ -74,14 +74,14 @@ export function DoctorProvider({ children, clinicId }: DoctorProviderProps) {
       if (!clinicId || !currentClinic?.roles.includes("ADMIN")) return; // Guard clause
 
       try {
-        const result = await getDoctors({
+        const result = await triggerFetchDoctorsQuery({
           variables: {
             activeClinicId: clinicId,
           },
         });
 
         if (result.data?.doctors) {
-          const doctorList = transformToDoctorList(result.data?.doctors);
+          const doctorList = mapToDoctorList(result.data?.doctors);
 
           if (doctorList.length > 0) {
             setDoctors(doctorList);
