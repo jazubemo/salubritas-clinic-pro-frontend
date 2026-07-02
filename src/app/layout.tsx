@@ -24,7 +24,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="min-h-screen w-full flex flex-col items-center justify-center relative bg-slate-950 text-slate-900 antialiased overflow-x-hidden">
-        <div className="absolute inset-0 z-0 pointer-events-none select-none">
+        <div className="absolute inset-0 -z-3 pointer-events-none select-none">
           <Image
             src={globalBackground}
             alt="Salubritas App Background"
@@ -33,7 +33,7 @@ export default function RootLayout({
             className="object-cover object-[25%_center] brightness-90"
           />
         </div>
-        <div className="absolute inset-0 bg-black/50 z-10" />
+        <div className="absolute inset-0 bg-black/50 -z-2" />
         <Toaster position="top-right" richColors /> 
 
         <ApolloGraphQLProvider>
