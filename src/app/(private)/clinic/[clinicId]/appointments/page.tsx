@@ -4,6 +4,7 @@ import AppointmentCalendar from "@/components/appointment/AppointmentCalendar";
 import { withRoleProtection } from "@/components/common/withRoleProtection";
 import DoctorFilterDropdown from "@/components/doctor/DoctorScheduleFilter ";
 import { AppointmentProvider } from "@/context/AppointmentContext";
+import { CalendarProvider } from "@/context/CalendarContext";
 import { DoctorProvider } from "@/context/DoctorContext";
 import { selectClinicByParamsId } from "@/lib/features/auth/authSelectors";
 import { useAppSelector } from "@/lib/store";
@@ -25,9 +26,11 @@ function AppointmentsPage({ params }: Props) {
         {currentClinic?.roles.includes("ADMIN") ? <DoctorFilterDropdown />: null}
 
         <div className="relative flex-1 w-full min-h-0 bg-white overflow-hidden">
+          <CalendarProvider>
           <AppointmentProvider clinicId={clinicId}>
             <AppointmentCalendar clinicId={clinicId} />
           </AppointmentProvider>
+          </CalendarProvider>
         </div>
       </DoctorProvider>
     </div>

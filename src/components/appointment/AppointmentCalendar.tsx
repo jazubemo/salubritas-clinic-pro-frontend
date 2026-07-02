@@ -11,33 +11,23 @@ import { DateSelectArg } from "@fullcalendar/core/index.js";
 import { useAppointments } from "@/hooks/useAppointments";
 import { DEFAULT_APP_TIMEZONE } from "@/common/constants/timezone";
 import CalendarSkeleton from "./CalendarSkeleton";
-import { CalendarViewType } from "./interfaces/CalendarViewType";
+
 import CreateAppointmentModal from "./create-appointment/CreateAppointmentModal";
 import { useDoctors } from "@/hooks/useDoctors";
-import DoctorFilterDropdown from "../doctor/DoctorScheduleFilter ";
+import { useCalendar } from "@/hooks/useCalendar";
 
 interface AppointmentCalendarProps {
   clinicId: string;
 }
-
-const CALENDAR_VIEW_MAP: Record<string, CalendarViewType> = {
-  multiMonthYear: "year",
-  dayGridMonth: "month",
-  timeGridWeek: "week",
-  timeGridDay: "day",
-};
 
 export default function Calendar({ clinicId }: AppointmentCalendarProps) {
   const {
     appointments,
     loading: isLoading,
     error,
-    handleSelect,
-    setCurrentView,
-    currentView,
-    isModalOpen,
-    onClose,
   } = useAppointments();
+
+  const { currentView, handleSelect, handleDatesSet, isModalOpen, onClose } = useCalendar();
 
   const { loading: loadingDoctors } = useDoctors();
 
@@ -55,20 +45,6 @@ export default function Calendar({ clinicId }: AppointmentCalendarProps) {
     const minutes = String(now.getMinutes()).padStart(2, "0");
     return `${hours}:${minutes}:00`;
   }, []);
-
-  const handleDatesSet = (arg: any) => {
-    const viewStart = arg.view.calendar.formatIso(arg.view.currentStart);
-    const viewEnd = arg.view.calendar.formatIso(arg.view.currentEnd);
-
-    const fullCalendarViewType = arg.view.type;
-    const simplifiedView = CALENDAR_VIEW_MAP[fullCalendarViewType] || "day";
-
-    setCurrentView({
-      start: viewStart,
-      end: viewEnd,
-      type: simplifiedView,
-    });
-  };
 
   return (
     <div className="relative w-full h-full flex flex-col overflow-hidden p-4 box-border">
