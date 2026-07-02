@@ -1,5 +1,6 @@
 import { Specialty, User } from "@/__generated__/graphql";
 import { DOCTORS_QUERY } from "@/graphql/queries/doctors";
+import { selectClinicByParamsId } from "@/lib/features/auth/authSelectors";
 import { useLazyQuery } from "@apollo/client/react";
 
 import {
@@ -10,11 +11,14 @@ import {
   SetStateAction,
   ReactNode,
 } from "react";
+import { useSelector } from "react-redux";
 import { toast } from "sonner";
 
 interface DoctorContextType {
   doctors: Doctor[];
   loading: boolean;
+  selectedDoctor: Doctor | undefined;
+  setSelectedDoctor: Dispatch<SetStateAction<Doctor | undefined>>;
 }
 
 export const DoctorContext = createContext<DoctorContextType | null>(null);
@@ -40,6 +44,9 @@ const DOCTOR_SPECIALTY_MAP: Record<Specialty, string> = {
 export function DoctorProvider({ children, clinicId }: DoctorProviderProps) {
   const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedDoctor, setSelectedDoctor] = useState<Doctor>();
+
+  const currentClinic = useSelector((state) => selectClinicByParamsId(state, clinicId));
 
   const [getDoctors] = useLazyQuery(DOCTORS_QUERY, {
     fetchPolicy: "network-only",
@@ -62,7 +69,7 @@ export function DoctorProvider({ children, clinicId }: DoctorProviderProps) {
     async function fetchDoctors() {
       setLoading(true);
 
-      if (!clinicId) return; // Guard clause
+      if (!clinicId || !currentClinic?.roles.includes("ADMIN")) return; // Guard clause
 
       try {
         const result = await getDoctors({
@@ -73,7 +80,9 @@ export function DoctorProvider({ children, clinicId }: DoctorProviderProps) {
         console.log("result", result);
 
         if (result.data?.doctors) {
-          setDoctors(transformToDoctorList(result.data?.doctors));
+          const doctorList = transformToDoctorList(result.data?.doctors);
+          setDoctors(doctorList);
+          setSelectedDoctor(doctorList[0]);
           setLoading(false);
         }
       } catch (err) {
@@ -85,11 +94,14 @@ export function DoctorProvider({ children, clinicId }: DoctorProviderProps) {
     fetchDoctors();
   }, [clinicId]);
 
+
   return (
     <DoctorContext
       value={{
         doctors,
         loading,
+        selectedDoctor,
+        setSelectedDoctor
       }}
     >
       {children}

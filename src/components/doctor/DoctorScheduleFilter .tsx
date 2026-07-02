@@ -1,19 +1,12 @@
 import { useDoctors } from "@/hooks/useDoctors";
 import React, { useState } from "react";
 
-// Mock data matching your schema naming convention
-const DOCTORS = [
-  { id: "doc-1", name: "Dr. John Doe", specialty: "Internal Medicine" },
-  { id: "doc-2", name: "Dr. Jane Smith", specialty: "Pediatrics" },
-  { id: "doc-3", name: "Dr. Alex Rivera", specialty: "Cardiology" },
-];
-
 export default function DoctorScheduleFilter() {
-  const [selectedDoctor, setSelectedDoctor] = useState(DOCTORS[0]);
   const [isOpen, setIsOpen] = useState(false);
 
-   const { doctors: availableDoctors } = useDoctors();
+   const { doctors: availableDoctors, setSelectedDoctor, selectedDoctor } = useDoctors();
    console.log('availableDoctors', availableDoctors);
+   console.log('selectedDoctor', selectedDoctor);
 
   const handleSelect = (doctor) => {
     setSelectedDoctor(doctor);
@@ -24,14 +17,14 @@ export default function DoctorScheduleFilter() {
   };
 
   return (
-    <div className="w-full flex flex-col items-center justify-center pt-2 pb-6 mb-2 border-b border-gray-100 z-50">
+    <div className="w-full flex flex-col items-center justify-center pt-2 pb-6 mb-2 border-b border-gray-100 bg-transparent">
       {/* Larger Tracking Subheading */}
-      <label className="block text-xs font-extrabold uppercase tracking-[0.2em] text-white mb-2.5 text-left z-50">
+      <label className="block text-xs font-extrabold uppercase tracking-[0.2em] text-white mb-2.5 text-left">
         Viewing Schedule For
       </label>
 
       {/* Maximized Trigger Button centered horizontally */}
-      <div className="relative inline-block text-left z-50 mx-auto">
+      <div className="relative inline-block z-30 text-left mx-auto">
         <button
           type="button"
           onClick={() => setIsOpen(!isOpen)}
@@ -46,7 +39,7 @@ export default function DoctorScheduleFilter() {
 
             {/* Massive Font Size Text Selection */}
             <span className="text-xl font-black text-gray-800 tracking-tight">
-              {selectedDoctor.name}
+              {selectedDoctor?.fullName}
             </span>
           </div>
 
@@ -80,14 +73,14 @@ export default function DoctorScheduleFilter() {
                   key={doctor.userId}
                   onClick={() => handleSelect(doctor)}
                   className={`w-full text-center px-6 py-3.5 text-base transition-colors flex flex-col items-center justify-center gap-1 ${
-                    selectedDoctor.id === doctor.userId
+                    selectedDoctor?.userId === doctor.userId
                       ? "bg-cyan-50 text-cyan-800 font-extrabold"
                       : "text-gray-700 hover:bg-slate-50 font-semibold"
                   }`}
                 >
                   <span className="text-base">{doctor.fullName}</span>
                   <span
-                    className={`text-xs uppercase tracking-wider font-bold ${selectedDoctor.id === doctor.userId ? "text-cyan-600" : "text-gray-400"}`}
+                    className={`text-xs uppercase tracking-wider font-bold ${selectedDoctor?.userId === doctor.userId ? "text-cyan-600" : "text-gray-400"}`}
                   >
                     {doctor.specialty}
                   </span>
