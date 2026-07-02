@@ -46,7 +46,9 @@ export function DoctorProvider({ children, clinicId }: DoctorProviderProps) {
   const [loading, setLoading] = useState(true);
   const [selectedDoctor, setSelectedDoctor] = useState<Doctor>();
 
-  const currentClinic = useSelector((state) => selectClinicByParamsId(state, clinicId));
+  const currentClinic = useSelector((state) =>
+    selectClinicByParamsId(state, clinicId),
+  );
 
   const [getDoctors] = useLazyQuery(DOCTORS_QUERY, {
     fetchPolicy: "network-only",
@@ -77,12 +79,14 @@ export function DoctorProvider({ children, clinicId }: DoctorProviderProps) {
             activeClinicId: clinicId,
           },
         });
-        console.log("result", result);
 
         if (result.data?.doctors) {
           const doctorList = transformToDoctorList(result.data?.doctors);
-          setDoctors(doctorList);
-          setSelectedDoctor(doctorList[0]);
+
+          if (doctorList.length > 0) {
+            setDoctors(doctorList);
+            setSelectedDoctor(doctorList[0]);
+          }
           setLoading(false);
         }
       } catch (err) {
@@ -94,14 +98,13 @@ export function DoctorProvider({ children, clinicId }: DoctorProviderProps) {
     fetchDoctors();
   }, [clinicId]);
 
-
   return (
     <DoctorContext
       value={{
         doctors,
         loading,
         selectedDoctor,
-        setSelectedDoctor
+        setSelectedDoctor,
       }}
     >
       {children}

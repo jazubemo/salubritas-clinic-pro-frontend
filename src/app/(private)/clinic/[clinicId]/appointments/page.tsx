@@ -18,7 +18,6 @@ function AppointmentsPage({ params }: Props) {
   const { clinicId } = use(params);
 
   const currentClinic = useSelector((state) => selectClinicByParamsId(state, clinicId));
-  console.log('currentClinic', currentClinic);
 
   return (
     <div className="w-full h-full flex flex-col overflow-hidden">

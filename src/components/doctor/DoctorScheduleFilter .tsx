@@ -5,25 +5,18 @@ export default function DoctorScheduleFilter() {
   const [isOpen, setIsOpen] = useState(false);
 
    const { doctors: availableDoctors, setSelectedDoctor, selectedDoctor } = useDoctors();
-   console.log('availableDoctors', availableDoctors);
-   console.log('selectedDoctor', selectedDoctor);
 
-  const handleSelect = (doctor) => {
+  const handleOnDoctorChange = (doctor) => {
     setSelectedDoctor(doctor);
     setIsOpen(false);
-    // if (onDoctorChange) {
-    //   onDoctorChange(doctor.id); // Triggers the calendar data refetch
-    // }
   };
 
   return (
     <div className="w-full flex flex-col items-center justify-center pt-2 pb-6 mb-2 border-b border-gray-100 bg-transparent">
-      {/* Larger Tracking Subheading */}
       <label className="block text-xs font-extrabold uppercase tracking-[0.2em] text-white mb-2.5 text-left">
         Viewing Schedule For
       </label>
 
-      {/* Maximized Trigger Button centered horizontally */}
       <div className="relative inline-block z-30 text-left mx-auto">
         <button
           type="button"
@@ -31,19 +24,16 @@ export default function DoctorScheduleFilter() {
           className="inline-flex items-center gap-4 px-7 py-4 rounded-2xl border-2 border-gray-200/90 bg-white hover:bg-slate-50 transition-all duration-200 shadow-md min-w-[320px] justify-center focus:outline-none focus:ring-4 focus:ring-cyan-500/10"
         >
           <div className="flex items-center gap-3.5 justify-center">
-            {/* Enriched Medical Status Radar Indicator */}
             <span className="relative flex h-3.5 w-3.5">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-cyan-500"></span>
             </span>
 
-            {/* Massive Font Size Text Selection */}
             <span className="text-xl font-black text-gray-800 tracking-tight">
               {selectedDoctor?.fullName}
             </span>
           </div>
 
-          {/* Down Chevron Arrow */}
           <svg
             className={`h-5 w-5 text-gray-500 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
             fill="none"
@@ -59,7 +49,6 @@ export default function DoctorScheduleFilter() {
           </svg>
         </button>
 
-        {/* Centered Floating Dropdown Option Drawer Panel */}
         {isOpen && (
           <>
             <div
@@ -71,7 +60,7 @@ export default function DoctorScheduleFilter() {
               {availableDoctors.map((doctor) => (
                 <button
                   key={doctor.userId}
-                  onClick={() => handleSelect(doctor)}
+                  onClick={() => handleOnDoctorChange(doctor)}
                   className={`w-full text-center px-6 py-3.5 text-base transition-colors flex flex-col items-center justify-center gap-1 ${
                     selectedDoctor?.userId === doctor.userId
                       ? "bg-cyan-50 text-cyan-800 font-extrabold"
