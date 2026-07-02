@@ -3,13 +3,17 @@ import { gql } from "@apollo/client";
 export const AppointmentsQuery = gql`
   query Appointments(
     $activeClinicId: String!
-    $endRange: String!
     $startRange: String!
+    $doctorId: ID
+    $endRange: String!
+    $patientId: ID
   ) {
     appointments(
       activeClinicId: $activeClinicId
-      endRange: $endRange
       startRange: $startRange
+      doctorId: $doctorId
+      endRange: $endRange
+      patientId: $patientId
     ) {
       _id
       clinicId
