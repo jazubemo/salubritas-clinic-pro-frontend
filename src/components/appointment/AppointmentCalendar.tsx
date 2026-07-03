@@ -21,13 +21,15 @@ interface AppointmentCalendarProps {
 }
 
 export default function Calendar({ clinicId }: AppointmentCalendarProps) {
-  const {
-    appointments,
-    loading: isLoading,
-    error,
-  } = useAppointments();
+  const { appointments, loading: isLoading, error } = useAppointments();
 
-  const { currentView, handleSelect, handleDatesSet, isModalOpen, onClose } = useCalendar();
+  const {
+    currentView,
+    handleTimeSlotSelect,
+    handleDatesSet,
+    showCreateAppointment,
+    closeCreateAppointment,
+  } = useCalendar();
 
   const { loading: loadingDoctors } = useDoctors();
 
@@ -48,11 +50,12 @@ export default function Calendar({ clinicId }: AppointmentCalendarProps) {
 
   return (
     <div className="relative w-full h-full flex flex-col overflow-hidden p-4 box-border">
-      {isLoading || loadingDoctors && (
-        <div className="absolute inset-0 z-50 bg-white p-4">
-          <CalendarSkeleton view={currentView.type} />
-        </div>
-      )}
+      {isLoading ||
+        (loadingDoctors && (
+          <div className="absolute inset-0 z-50 bg-white p-4">
+            <CalendarSkeleton view={currentView.type} />
+          </div>
+        ))}
       <div className="flex-1 w-full min-h-0">
         <FullCalendar
           ref={calendarRef}
@@ -85,7 +88,7 @@ export default function Calendar({ clinicId }: AppointmentCalendarProps) {
           weekends={true}
           slotMinTime="08:00:00"
           slotMaxTime="16:30:00"
-          handleWindowResize={true} 
+          handleWindowResize={true}
           slotDuration="00:15:00"
           allDaySlot={false}
           events={appointments}
@@ -94,12 +97,14 @@ export default function Calendar({ clinicId }: AppointmentCalendarProps) {
           scrollTimeReset={false}
           timeZone={DEFAULT_APP_TIMEZONE}
           selectable={true}
-          select={(selectInfo: DateSelectArg) => handleSelect(selectInfo)}
+          select={(selectInfo: DateSelectArg) =>
+            handleTimeSlotSelect(selectInfo)
+          }
           datesSet={handleDatesSet}
         />
         <CreateAppointmentModal
-          isOpen={isModalOpen}
-          onClose={onClose}
+          isOpen={showCreateAppointment}
+          onClose={closeCreateAppointment}
           clinicId={clinicId}
         />
       </div>

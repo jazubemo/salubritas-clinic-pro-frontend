@@ -2,6 +2,7 @@
 
 import { MINUTES_IN_AN_HOUR } from "@/common/constants/time";
 import { useAppointments } from "@/hooks/useAppointments";
+import { useCalendar } from "@/hooks/useCalendar";
 import { useDoctors } from "@/hooks/useDoctors";
 import React, { useState, useEffect } from "react";
 
@@ -11,16 +12,21 @@ interface ModalProps {
   clinicId: string;
 }
 
+const APPOINTMENT_STATUS_MAP = {
+  PENDING: "pending",
+  CONFIRMED: "confirmed",
+};
+
 export default function CreateAppointmentModal({
   isOpen,
   onClose,
   clinicId,
 }: ModalProps) {
-  const [selectedDoctorId, setSelectedDoctorId] = useState<string>("");
   const [patientSearch, setPatientSearch] = useState<string>("");
+  const [status, setStatus] = useState(APPOINTMENT_STATUS_MAP.PENDING);
 
-  const { selectedStartTime, selectedEndTime } = useAppointments();
-  //const [availableSlots, setAvailableSlots] = useState<string[]>([]);
+  const { selectedStartTime, selectedEndTime } = useCalendar();
+  const { selectedDoctor } = useDoctors();
 
   //const [createAppointment, { loading, error }] = useMutation(CREATE_APPOINTMENT);
 
@@ -62,7 +68,7 @@ export default function CreateAppointmentModal({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (
-      !selectedDoctorId ||
+      !selectedDoctor?.userId ||
       !selectedStartTime ||
       !selectedEndTime ||
       !patientSearch
@@ -96,10 +102,10 @@ export default function CreateAppointmentModal({
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="bg-white rounded-2xl p-6 w-full max-w-md border border-gray-100 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.15)]"
+        className="bg-white rounded-2xl p-6 w-full max-w-md border border-gray-100 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.15)] animate-in fade-in zoom-in-95 duration-200"
       >
         {/* Header */}
-        <div className="flex items-center justify-between border-b pb-4">
+        <div className="flex items-center justify-between border-b border-gray-100 pb-4">
           <h3 className="text-xl font-bold text-gray-900">New Appointment</h3>
           <button
             onClick={onClose}
@@ -109,11 +115,11 @@ export default function CreateAppointmentModal({
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="mt-4 space-y-5">
-          {/* Step 1: Patient Selection */}
+        <form onSubmit={handleSubmit} className="mt-5 space-y-5">
+          {/* Field 1: Patient Selection */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Patient Name
+            <label className="block text-sm font-bold text-gray-800 mb-1.5">
+              Patient Name:
             </label>
             <input
               type="text"
@@ -121,78 +127,88 @@ export default function CreateAppointmentModal({
               placeholder="Type patient's name..."
               value={patientSearch}
               onChange={(e) => setPatientSearch(e.target.value)}
-              className="w-full rounded-lg border border-gray-300 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all"
+              className="w-full rounded-xl border border-gray-300 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all placeholder:text-gray-400"
             />
           </div>
 
-          {/* Step 2: Doctor Selection */}
-          {/* <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Medical Specialist
-            </label>
-            <select
-              required
-              value={selectedDoctorId}
-              onChange={(e) => setSelectedDoctorId(e.target.value)}
-              className="w-full rounded-lg border border-gray-300 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all bg-white"
-            >
-              <option value="">Select a doctor...</option>
-              {availableDoctors.map((doc) => (
-                <option key={doc.userId} value={doc.userId}>
-                  {doc.fullName}
-                </option>
-              ))}
-            </select>
-          </div> */}
-          {/* Medical Specialist - Read Only Block */}
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-500 mb-1.5">
-              Medical Specialist
+          {/* Field 2: Medical Specialist - Read Only Block */}
+          <div>
+            <label className="block text-sm font-bold text-gray-800 mb-1.5">
+              Medical Specialist:
             </label>
             <div className="w-full rounded-xl bg-gray-50/80 px-3.5 py-2.5 border border-gray-100 text-sm font-semibold text-gray-700">
-              Dr. Jhon Doe
+              {`${selectedDoctor?.fullName || "Dr. Jhon Doe"} (${selectedDoctor?.specialty || "Internal Medicine"})`}
             </div>
           </div>
 
-          {/* Compact Inline Selected Time Row */}
-          <div className="mt-4 mb-5 flex items-center justify-between border-b border-gray-100 pb-4 px-1">
-            {/* Left Label */}
-            <span className="text-sm font-medium text-gray-500">
-              Selected Time
+          {/* Field 3: Selected Time Row */}
+          <div className="flex items-center justify-between py-1">
+            <span className="text-sm font-bold text-gray-800">
+              Selected Time:
             </span>
-
-            {/* Time Range Caps */}
             <div className="flex items-center gap-1.5 text-sm font-semibold">
-              {/* Start Time */}
               <span className="inline-flex items-center rounded-md bg-emerald-50 px-2.5 py-1 text-emerald-700 border border-emerald-100/40">
-                {selectedStartTime}
+                {selectedStartTime || "3:00 PM"}
               </span>
-
-              {/* Divider Arrow */}
               <span className="text-gray-300 font-normal mx-0.5">→</span>
-
-              {/* End Time */}
               <span className="inline-flex items-center rounded-md bg-amber-50 px-2.5 py-1 text-amber-700 border border-amber-100/40">
-                {selectedEndTime}
+                {selectedEndTime || "3:30 PM"}
               </span>
+            </div>
+          </div>
+
+          {/* Field 4: Appointment Status Toggle */}
+          <div className="flex justify-between items-center py-1">
+            <span className="text-sm font-bold text-gray-800">
+              Appointment Status:
+            </span>
+            <div className="inline-flex rounded-xl bg-gray-100 p-1 border border-gray-200/40">
+              <button
+                type="button"
+                onClick={() => setStatus(APPOINTMENT_STATUS_MAP.PENDING)}
+                className={`px-4 py-1.5 text-xs font-semibold rounded-lg transition-all duration-200 flex items-center gap-1.5 ${
+                  status === APPOINTMENT_STATUS_MAP.PENDING
+                    ? "bg-amber-50 text-amber-700 shadow-sm border border-amber-200/30"
+                    : "text-gray-400 hover:text-gray-600 border border-transparent"
+                }`}
+              >
+                <span
+                  className={`w-1.5 h-1.5 rounded-full ${status === APPOINTMENT_STATUS_MAP.PENDING ? "bg-amber-500" : "bg-transparent"}`}
+                />
+                Pending
+              </button>
+              <button
+                type="button"
+                onClick={() => setStatus(APPOINTMENT_STATUS_MAP.CONFIRMED)}
+                className={`px-4 py-1.5 text-xs font-semibold rounded-lg transition-all duration-200 flex items-center gap-1.5 ${
+                  status === APPOINTMENT_STATUS_MAP.CONFIRMED
+                    ? "bg-emerald-50 text-emerald-700 shadow-sm border border-emerald-200/30"
+                    : "text-gray-400 hover:text-gray-600 border border-transparent"
+                }`}
+              >
+                <span
+                  className={`w-1.5 h-1.5 rounded-full ${status === APPOINTMENT_STATUS_MAP.CONFIRMED ? "bg-emerald-500" : "bg-transparent"}`}
+                />
+                Confirmed
+              </button>
             </div>
           </div>
 
           {/* Action Buttons */}
-          <div className="flex justify-end gap-3 border-t pt-4 mt-6">
+          <div className="flex justify-end gap-3 border-t border-gray-100 pt-4 mt-6">
             <button
               type="button"
               onClick={onClose}
-              className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+              className="rounded-xl border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={!selectedStartTime || !selectedEndTime}
-              className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors shadow-sm"
+              className="rounded-xl bg-slate-950 px-5 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed transition-all shadow-sm hover:shadow"
             >
-              {"Confirm Appointment"}
+              Save Appointment
             </button>
           </div>
         </form>
