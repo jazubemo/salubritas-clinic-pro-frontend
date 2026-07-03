@@ -4,10 +4,10 @@ import AppointmentCalendar from "@/components/appointment/AppointmentCalendar";
 import { withRoleProtection } from "@/components/common/withRoleProtection";
 import DoctorFilterDropdown from "@/components/doctor/DoctorScheduleFilter ";
 import { AppointmentProvider } from "@/context/AppointmentContext";
-import { CalendarProvider } from "@/context/CalendarContext";
-import { DoctorProvider } from "@/context/DoctorContext";
 import { selectClinicByParamsId } from "@/lib/features/auth/authSelectors";
 import { useAppSelector } from "@/lib/store";
+import { CalendarProvider } from "@/providers/CalendarProvider";
+import { DoctorProvider } from "@/providers/DoctorProvider";
 import { use } from "react";
 import { useSelector } from "react-redux";
 
