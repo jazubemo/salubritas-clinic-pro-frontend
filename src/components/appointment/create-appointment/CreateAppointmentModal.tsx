@@ -4,6 +4,7 @@ import { MINUTES_IN_AN_HOUR } from "@/common/constants/time";
 import { useAppointments } from "@/hooks/useAppointments";
 import { useCalendar } from "@/hooks/useCalendar";
 import { useDoctors } from "@/hooks/useDoctors";
+import { CalendarPlus } from "lucide-react";
 import React, { useState, useEffect } from "react";
 
 interface ModalProps {
@@ -105,8 +106,15 @@ export default function CreateAppointmentModal({
         className="bg-white rounded-2xl p-6 w-full max-w-md border border-gray-100 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.15)] animate-in fade-in zoom-in-95 duration-200"
       >
         {/* Header */}
+        {/* Lucide Calendar Medical Header */}
         <div className="flex items-center justify-between border-b border-gray-100 pb-4">
-          <h3 className="text-xl font-bold text-gray-900">New Appointment</h3>
+          <div className="flex items-center gap-3">
+            {/* Soft Boxed Medical Teal Container */}
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-transparent text-blue border border-teal-100/40 shadow-sm">
+              <CalendarPlus size={20} strokeWidth={2.25} />
+            </div>
+            <h3 className="text-xl font-bold text-gray-900">New Appointment</h3>
+          </div>
           <button
             onClick={onClose}
             className="rounded-lg p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors"

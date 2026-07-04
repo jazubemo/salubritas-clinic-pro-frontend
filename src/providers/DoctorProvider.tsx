@@ -1,15 +1,9 @@
 import { Specialty, User } from "@/__generated__/graphql";
 import { Doctor, DoctorContext } from "@/context/DoctorContext";
 import { DOCTORS_QUERY } from "@/graphql/queries/doctors";
-import { selectClinicByParamsId } from "@/lib/features/auth/authSelectors";
-import { useLazyQuery } from "@apollo/client/react";
+import { useQuery } from "@apollo/client/react";
 
-import {
-  useState,
-  useEffect,
-  ReactNode,
-} from "react";
-import { useSelector } from "react-redux";
+import { useState, ReactNode } from "react";
 
 const DOCTOR_SPECIALTY_MAP: Record<Specialty, string> = {
   CARDIOTHORACIC_SURGERY: "Cardiothoracic Surgery",
@@ -24,19 +18,16 @@ interface DoctorProviderProps {
 }
 
 export function DoctorProvider({ children, clinicId }: DoctorProviderProps) {
-  const [doctors, setDoctors] = useState<Doctor[]>([]);
-  const [loading, setLoading] = useState(true);
   const [selectedDoctor, setSelectedDoctor] = useState<Doctor>();
 
-  const currentClinic = useSelector((state) =>
-    selectClinicByParamsId(state, clinicId),
-  );
-
-  const [triggerFetchDoctorsQuery] = useLazyQuery(DOCTORS_QUERY, {
-    fetchPolicy: "network-only",
+  const { loading, error, data } = useQuery(DOCTORS_QUERY, {
+    variables: { activeClinicId: clinicId },
+    skip: !clinicId,
   });
 
   const mapToDoctorList = (users: Partial<User[]>): Doctor[] => {
+    if (!users) return [];
+
     return users.map(
       (user) =>
         ({
@@ -49,43 +40,16 @@ export function DoctorProvider({ children, clinicId }: DoctorProviderProps) {
     );
   };
 
-  useEffect(() => {
-    async function fetchDoctors() {
-      setLoading(true);
+  const doctorsList = mapToDoctorList(data?.doctors);
 
-      if (!clinicId || !currentClinic?.roles.includes("ADMIN")) return; // Guard clause
-
-      try {
-        const result = await triggerFetchDoctorsQuery({
-          variables: {
-            activeClinicId: clinicId,
-          },
-        });
-
-        if (result.data?.doctors) {
-          const doctorList = mapToDoctorList(result.data?.doctors);
-
-          if (doctorList.length > 0) {
-            setDoctors(doctorList);
-            setSelectedDoctor(doctorList[0]);
-          }
-          setLoading(false);
-        }
-      } catch (err) {
-        if (err instanceof Error && err.name === "AbortError") return;
-        console.error("Failed to fetch appointments:", err);
-      }
-    }
-
-    fetchDoctors();
-  }, [clinicId]);
+  const currentSelectedDoctor = selectedDoctor || doctorsList[0];
 
   return (
     <DoctorContext
       value={{
-        doctors,
+        doctors: doctorsList,
         loading,
-        selectedDoctor,
+        selectedDoctor: currentSelectedDoctor,
         setSelectedDoctor,
       }}
     >
