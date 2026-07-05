@@ -4,11 +4,7 @@ import { AppointmentEvent } from "@/common/types/AppointmentEvent";
 import { AppointmentsQuery } from "@/graphql/queries/appointments";
 import { useLazyQuery } from "@apollo/client/react";
 
-import {
-  useState,
-  useEffect,
-  ReactNode,
-} from "react";
+import { useState, useEffect, ReactNode } from "react";
 import { selectClinicByParamsId } from "@/lib/features/auth/authSelectors";
 import { useSelector } from "react-redux";
 import { useAppSelector } from "@/lib/store";
@@ -52,14 +48,12 @@ export function AppointmentProvider({
         appointment.status === "PENDING"
           ? pendingAppointmentColor
           : confirmedAppointmentColor,
+      overlap: false,
       ...appointment,
     }));
   };
 
-  const buildQueryVariables = (
-    startRange: string,
-    endRange: string,
-  ) => {
+  const buildQueryVariables = (startRange: string, endRange: string) => {
     const { roles } = currentClinic;
 
     return {
@@ -73,7 +67,7 @@ export function AppointmentProvider({
   };
 
   useEffect(() => {
-    let isMounted = true; 
+    let isMounted = true;
 
     async function fetchAppointments() {
       setLoading(true);
@@ -87,16 +81,14 @@ export function AppointmentProvider({
         });
 
         if (isMounted && result.data?.appointments) {
-          setAppointments(
-            mapAppointmentsToEvents(result.data.appointments),
-          );
+          setAppointments(mapAppointmentsToEvents(result.data.appointments));
           if (isMounted) setLoading(false);
         }
       } catch (err) {
         if (err instanceof Error && err.name === "AbortError") return;
         console.error("Failed to fetch appointments:", err);
       } finally {
-        setLoading(false); 
+        setLoading(false);
       }
     }
 

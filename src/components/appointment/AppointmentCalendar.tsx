@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useRef, useState } from "react";
+import React, { useMemo, useRef } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -13,8 +13,8 @@ import { DEFAULT_APP_TIMEZONE } from "@/common/constants/timezone";
 import CalendarSkeleton from "./CalendarSkeleton";
 
 import CreateAppointmentModal from "./create-appointment/CreateAppointmentModal";
-import { useDoctors } from "@/hooks/useDoctors";
 import { useCalendar } from "@/hooks/useCalendar";
+import { createSelectAllowValidator } from "@/lib/utils/createSelectAllowValidator";
 
 interface AppointmentCalendarProps {
   clinicId: string;
@@ -30,8 +30,6 @@ export default function Calendar({ clinicId }: AppointmentCalendarProps) {
     showCreateAppointment,
     closeCreateAppointment,
   } = useCalendar();
-
-  const { loading: loadingDoctors } = useDoctors();
 
   const calendarRef = useRef<FullCalendar>(null);
 
@@ -100,6 +98,10 @@ export default function Calendar({ clinicId }: AppointmentCalendarProps) {
             handleTimeSlotSelect(selectInfo)
           }
           datesSet={handleDatesSet}
+
+          // avoid overlapping
+          eventOverlap={false}
+          selectAllow={createSelectAllowValidator(appointments)}
         />
         <CreateAppointmentModal
           isOpen={showCreateAppointment}
