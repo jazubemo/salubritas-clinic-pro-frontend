@@ -1,11 +1,13 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, Dispatch, SetStateAction } from "react";
 import { useSearchPatients } from "@/hooks/useSearchPatients";
 import { User } from "@/__generated__/graphql";
 
 interface PatientSelectDropdownProps {
   clinicId: string;
+  selectedPatient: Partial<User> | null;
+  setSelectedPatient: Dispatch<SetStateAction<Partial<User> | null>>;
 }
 
 export default function PatientSelectDropdown({

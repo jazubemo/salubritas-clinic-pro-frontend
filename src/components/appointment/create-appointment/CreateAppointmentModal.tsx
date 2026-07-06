@@ -8,6 +8,7 @@ import { useSearchPatients } from "@/hooks/useSearchPatients";
 import { CalendarPlus } from "lucide-react";
 import React, { useState, useEffect } from "react";
 import PatientSelectDropdown from "./PatientSelectDropdown";
+import { User } from "@/__generated__/graphql";
 
 interface ModalProps {
   isOpen: boolean;
@@ -25,13 +26,13 @@ export default function CreateAppointmentModal({
   onClose,
   clinicId,
 }: ModalProps) {
-  const [patientSearch, setPatientSearch] = useState<string>("");
+  const [selectedPatient, setSelectedPatient] = useState<Partial<User> | null>(
+    null,
+  );
   const [status, setStatus] = useState(APPOINTMENT_STATUS_MAP.PENDING);
 
   const { selectedStartTime, selectedEndTime } = useCalendar();
   const { selectedDoctor } = useDoctors();
-
-  const { loading, error, patients, isDebouncing } = useSearchPatients(clinicId, patientSearch);
 
   //const [createAppointment, { loading, error }] = useMutation(CREATE_APPOINTMENT);
 
@@ -42,7 +43,7 @@ export default function CreateAppointmentModal({
       !selectedDoctor?.userId ||
       !selectedStartTime ||
       !selectedEndTime ||
-      !patientSearch
+      !selectedPatient
     )
       return;
 
@@ -94,7 +95,7 @@ export default function CreateAppointmentModal({
 
         <form onSubmit={handleSubmit} className="mt-5 space-y-5">
           {/* Field 1: Patient Selection */}
-          <PatientSelectDropdown clinicId={clinicId} />
+          <PatientSelectDropdown clinicId={clinicId} selectedPatient={selectedPatient} setSelectedPatient={setSelectedPatient} />
 
           {/* Field 2: Medical Specialist - Read Only Block */}
           <div>
