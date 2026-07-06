@@ -1,6 +1,8 @@
+import { DEFAULT_APP_TIMEZONE } from "@/common/constants/timezone";
 import { AppointmentEvent } from "@/common/types/AppointmentEvent";
-import { DateSelectArg, DateSpanApi } from "@fullcalendar/core";
+import { DateSpanApi } from "@fullcalendar/core";
 import { EventImpl } from "@fullcalendar/core/internal";
+import { DateTime } from "luxon";
 
 /**
  * Higher-order function that generates a FullCalendar selectAllow constraint.
@@ -8,28 +10,27 @@ import { EventImpl } from "@fullcalendar/core/internal";
  */
 export const createSelectAllowValidator = (appointments: AppointmentEvent[]) => {
   return (span: DateSpanApi, movingEvent: EventImpl | null): boolean => {
-    if (!span.start || !span.end) return true;
+    if (!span.startStr || !span.endStr) return true;
 
-    const selectionStart = span.start.getTime();
-    const selectionEnd = span.end.getTime();
-    
-    const now = new Date();
-    now.setSeconds(0, 0);
-    const timeThreshold = now.getTime();
+    const selectionStart = DateTime.fromISO(span.startStr, { zone: DEFAULT_APP_TIMEZONE });
+    const selectionEnd = DateTime.fromISO(span.endStr, { zone: DEFAULT_APP_TIMEZONE });
 
-    // Block new selections if the target slot has already passed
-    if (selectionStart < timeThreshold) {
+    const systemNow = DateTime.now().setZone(DEFAULT_APP_TIMEZONE).set({ second: 0, millisecond: 0 });
+
+    if (selectionStart < systemNow) {
       return false; 
     }
 
     const isOverlapping = appointments.some((appointment) => {
-      const eventStart = new Date(appointment.start).toISOString();
-      const eventEnd = new Date(appointment.end).toISOString();
+      const eventStart = appointment.start instanceof DateTime 
+        ? appointment.start 
+        : DateTime.fromISO(appointment.start as string, { zone: DEFAULT_APP_TIMEZONE });
 
-      const selectionStartISO = new Date(selectionStart).toISOString();
-      const selectionEndISO = new Date(selectionEnd).toISOString();
+      const eventEnd = appointment.end instanceof DateTime 
+        ? appointment.end 
+        : DateTime.fromISO(appointment.end as string, { zone: DEFAULT_APP_TIMEZONE });
 
-      return selectionStartISO < eventEnd && selectionEndISO > eventStart;
+      return selectionStart < eventEnd && selectionEnd > eventStart;
     });
 
     return !isOverlapping;
