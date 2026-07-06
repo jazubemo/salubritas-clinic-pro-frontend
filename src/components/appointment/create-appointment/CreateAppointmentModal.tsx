@@ -4,6 +4,7 @@ import { MINUTES_IN_AN_HOUR } from "@/common/constants/time";
 import { useAppointments } from "@/hooks/useAppointments";
 import { useCalendar } from "@/hooks/useCalendar";
 import { useDoctors } from "@/hooks/useDoctors";
+import { useSearchPatients } from "@/hooks/useSearchPatients";
 import { CalendarPlus } from "lucide-react";
 import React, { useState, useEffect } from "react";
 
@@ -29,41 +30,9 @@ export default function CreateAppointmentModal({
   const { selectedStartTime, selectedEndTime } = useCalendar();
   const { selectedDoctor } = useDoctors();
 
+  const { loading, error, patients, isDebouncing } = useSearchPatients(clinicId, patientSearch);
+
   //const [createAppointment, { loading, error }] = useMutation(CREATE_APPOINTMENT);
-
-  // Helper to convert "HH:MM" string to total minutes
-  const timeStringToMinutes = (timeString: string): number => {
-    const [hours, minutes] = timeString.split(":").map(Number);
-    return hours * MINUTES_IN_AN_HOUR + minutes;
-  };
-
-  // Helper to format total minutes back to "HH:MM"
-  const minutesToTimeString = (totalMinutes: number): string => {
-    const hours = Math.floor(totalMinutes / MINUTES_IN_AN_HOUR);
-    const minutes = totalMinutes % MINUTES_IN_AN_HOUR;
-
-    const pad = (num: number) => num.toString().padStart(2, "0");
-    return `${pad(hours)}:${pad(minutes)}`;
-  };
-
-  // Main Function: Single Responsibility, High Readability
-  const generateSlots = (
-    start: string,
-    end: string,
-    interval: number,
-  ): string[] => {
-    const slots: string[] = [];
-
-    let currentMins = timeStringToMinutes(start);
-    const endMins = timeStringToMinutes(end);
-
-    while (currentMins + interval <= endMins) {
-      slots.push(minutesToTimeString(currentMins));
-      currentMins += interval;
-    }
-
-    return slots;
-  };
 
   // 3. Dispatch Form Submit payload to GraphQL Backend
   const handleSubmit = async (e: React.FormEvent) => {
@@ -106,7 +75,6 @@ export default function CreateAppointmentModal({
         className="bg-white rounded-2xl p-6 w-full max-w-md border border-gray-100 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.15)] animate-in fade-in zoom-in-95 duration-200"
       >
         {/* Header */}
-        {/* Lucide Calendar Medical Header */}
         <div className="flex items-center justify-between border-b border-gray-100 pb-4">
           <div className="flex items-center gap-3">
             {/* Soft Boxed Medical Teal Container */}
@@ -137,6 +105,18 @@ export default function CreateAppointmentModal({
               onChange={(e) => setPatientSearch(e.target.value)}
               className="w-full rounded-xl border border-gray-300 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all placeholder:text-gray-400"
             />
+
+            {(loading || isDebouncing) && patientSearch.trim().length >= 3 && (
+              <p className="text-gray-500 mt-2">Searching clinic database...</p>
+            )}
+
+            <ul className="mt-4">
+              {patients.map((patient: any) => (
+                <li key={patient._id}>
+                  {patient.firstName} {patient.lastName}
+                </li>
+              ))}
+            </ul>
           </div>
 
           {/* Field 2: Medical Specialist - Read Only Block */}
