@@ -7,6 +7,7 @@ import { useDoctors } from "@/hooks/useDoctors";
 import { useSearchPatients } from "@/hooks/useSearchPatients";
 import { CalendarPlus } from "lucide-react";
 import React, { useState, useEffect } from "react";
+import PatientSelectDropdown from "./PatientSelectDropdown";
 
 interface ModalProps {
   isOpen: boolean;
@@ -93,31 +94,7 @@ export default function CreateAppointmentModal({
 
         <form onSubmit={handleSubmit} className="mt-5 space-y-5">
           {/* Field 1: Patient Selection */}
-          <div>
-            <label className="block text-sm font-bold text-gray-800 mb-1.5">
-              Patient Name:
-            </label>
-            <input
-              type="text"
-              required
-              placeholder="Type patient's name..."
-              value={patientSearch}
-              onChange={(e) => setPatientSearch(e.target.value)}
-              className="w-full rounded-xl border border-gray-300 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all placeholder:text-gray-400"
-            />
-
-            {(loading || isDebouncing) && patientSearch.trim().length >= 3 && (
-              <p className="text-gray-500 mt-2">Searching clinic database...</p>
-            )}
-
-            <ul className="mt-4">
-              {patients.map((patient: any) => (
-                <li key={patient._id}>
-                  {patient.firstName} {patient.lastName}
-                </li>
-              ))}
-            </ul>
-          </div>
+          <PatientSelectDropdown clinicId={clinicId} />
 
           {/* Field 2: Medical Specialist - Read Only Block */}
           <div>
