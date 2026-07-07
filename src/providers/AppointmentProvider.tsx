@@ -99,11 +99,19 @@ export function AppointmentProvider({
     };
   }, [currentView, clinicId, selectedDoctor]);
 
+  const addAppointment = (newAppointment: AppointmentEvent) => {
+    setAppointments((prevAppointments) => [
+      ...prevAppointments,
+      newAppointment,
+    ]);
+  };
+
   return (
     <AppointmentContext
       value={{
         appointments,
         loading,
+        addAppointment,
       }}
     >
       {children}

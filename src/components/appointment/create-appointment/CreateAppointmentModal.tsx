@@ -6,7 +6,11 @@ import { useDoctors } from "@/hooks/useDoctors";
 import { CalendarPlus } from "lucide-react";
 import React, { useState, useEffect } from "react";
 import PatientSelectDropdown from "./PatientSelectDropdown";
-import { User } from "@/__generated__/graphql";
+import { Appointment, User } from "@/__generated__/graphql";
+import { useMutation } from "@apollo/client/react";
+import { CREATE_APPOINTMENT_QUERY } from "@/graphql/mutations/create-appointment";
+import { toast } from "sonner";
+import { useAppointments } from "@/hooks/useAppointments";
 
 interface ModalProps {
   isOpen: boolean;
@@ -33,6 +37,7 @@ export default function CreateAppointmentModal({
 
   const { selectedTime } = useCalendar();
   const { selectedDoctor } = useDoctors();
+  const { addAppointment } = useAppointments();
 
   const enableButton =
     !selectedDoctor?.userId ||
@@ -40,29 +45,30 @@ export default function CreateAppointmentModal({
     !selectedTime.end ||
     !selectedPatient;
 
-  //const [createAppointment, { loading, error }] = useMutation(CREATE_APPOINTMENT);
+  const [createAppointment, { loading, error }] = useMutation(CREATE_APPOINTMENT_QUERY);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("selectedPatient", selectedPatient);
-    console.log("selectedDoctor", selectedDoctor);
-    console.log("selectedStartTime", selectedTime?.start);
-    console.log("selectedEndTime", selectedTime?.end);
-    console.log("appointment status", status.toUpperCase());
 
     try {
-      //   await createAppointment({
-      //     variables: {
-      //       input: {
-      //         clinicId,
-      //         doctorId: selectedDoctorId,
-      //         appointmentDate: selectedDate,
-      //         startTime: selectedTime,
-      //         patientNameMock: patientSearch,
-      //       }
-      //     }
-      //   });
+        const newlyCreatedAppointment = await createAppointment({
+          variables: {
+            input: {
+              clinicId,
+              doctorId: selectedDoctor?.userId,
+              startTime: selectedTime?.start.timestamp,
+              endTime: selectedTime?.end.timestamp,
+              patientId: selectedPatient?._id,
+              status: status.toUpperCase() || "PENDING",
+              isNewPatient,
+              reason,
+            }
+          }
+        });
       onClose();
+      toast.success("Success", {
+        description: "You've successfully created this appointment.",
+      });
     } catch (err) {
       console.error("Failed to create appointment:", err);
     }
@@ -150,7 +156,7 @@ export default function CreateAppointmentModal({
               Medical Specialist:
             </label>
             <div className="w-full rounded-xl bg-gray-50/80 px-3.5 py-2.5 border border-gray-100 text-sm font-semibold text-gray-700">
-              {`${selectedDoctor?.fullName || "Dr. Jhon Doe"} (${selectedDoctor?.specialty || "Internal Medicine"})`}
+              {`${selectedDoctor?.fullName} (${selectedDoctor?.specialty})`}
             </div>
           </div>
 
@@ -218,7 +224,7 @@ export default function CreateAppointmentModal({
             </button>
             <button
               type="submit"
-              disabled={enableButton}
+              disabled={enableButton || loading}
               className="rounded-xl bg-slate-950 px-5 py-2 text-sm font-medium text-white hover:bg-gray-800 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed transition-all shadow-sm hover:shadow cursor-pointer"
             >
               Save Appointment
