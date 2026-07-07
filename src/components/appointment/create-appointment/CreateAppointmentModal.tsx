@@ -45,10 +45,12 @@ export default function CreateAppointmentModal({
     !selectedTime.end ||
     !selectedPatient;
 
-  const [createAppointment, { loading, error }] = useMutation(CREATE_APPOINTMENT_QUERY);
+  const [createAppointment, { loading, error }] = useMutation(
+    CREATE_APPOINTMENT_QUERY,
+  );
 
   const handleOnCloseModal = (e: any) => {
-    e.stopPropagation()
+    e.stopPropagation();
     setSelectedPatient(null);
     onClose();
   };
@@ -57,26 +59,31 @@ export default function CreateAppointmentModal({
     e.preventDefault();
 
     try {
-        const newlyCreatedAppointment = await createAppointment({
-          variables: {
-            input: {
-              activeClinicId: clinicId,
-              doctorId: selectedDoctor?.userId,
-              startTime: selectedTime?.start.timestamp,
-              endTime: selectedTime?.end.timestamp,
-              patientId: selectedPatient?._id,
-              status: status.toUpperCase() || "PENDING",
-              isNewPatient,
-              reason,
-            }
-          }
-        });
+      const newlyCreatedAppointment = await createAppointment({
+        variables: {
+          activeClinicId: clinicId,
+          createAppointmentInput: {
+            clinicId,
+            doctorId: selectedDoctor?.userId,
+            startTime: selectedTime?.start.timestamp,
+            endTime: selectedTime?.end.timestamp,
+            patientId: selectedPatient?._id,
+            status: status.toUpperCase() || "PENDING",
+            isNewPatient,
+            reason,
+          },
+        },
+      });
       onClose();
       toast.success("Success", {
         description: "You've successfully created this appointment.",
       });
     } catch (err) {
       console.error("Failed to create appointment:", err);
+      toast.error("Error", {
+        description:
+          "Something fail while trying to create the new appointment.",
+      });
     }
   };
 
