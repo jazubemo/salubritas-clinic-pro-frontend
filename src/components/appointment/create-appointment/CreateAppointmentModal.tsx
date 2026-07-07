@@ -28,6 +28,8 @@ export default function CreateAppointmentModal({
     null,
   );
   const [status, setStatus] = useState(APPOINTMENT_STATUS_MAP.PENDING);
+  const [isNewPatient, setIsNewPatient] = useState<boolean>(false);
+  const [reason, setReason] = useState("");
 
   const { selectedTime } = useCalendar();
   const { selectedDoctor } = useDoctors();
@@ -42,11 +44,11 @@ export default function CreateAppointmentModal({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('selectedPatient', selectedPatient);
-    console.log('selectedDoctor', selectedDoctor);
-    console.log('selectedStartTime', selectedTime?.start);
-    console.log('selectedEndTime', selectedTime?.end);
-    console.log('appointment status', status.toUpperCase());
+    console.log("selectedPatient", selectedPatient);
+    console.log("selectedDoctor", selectedDoctor);
+    console.log("selectedStartTime", selectedTime?.start);
+    console.log("selectedEndTime", selectedTime?.end);
+    console.log("appointment status", status.toUpperCase());
 
     try {
       //   await createAppointment({
@@ -100,6 +102,47 @@ export default function CreateAppointmentModal({
             selectedPatient={selectedPatient}
             setSelectedPatient={setSelectedPatient}
           />
+
+          <div className="flex flex-row items-end gap-6 mb-5">
+            <div className="flex flex-col gap-1.5 shrink-0 w-28">
+              <span className="text-xs font-bold text-gray-700 whitespace-nowrap">
+                Is New Patient?
+              </span>
+
+              <div className="flex items-center gap-2 h-9">
+                <button
+                  type="button"
+                  onClick={() => setIsNewPatient(!isNewPatient)}
+                  className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                    isNewPatient ? "bg-slate-900" : "bg-gray-200"
+                  }`}
+                >
+                  <span
+                    className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+                      isNewPatient ? "translate-x-4" : "translate-x-0"
+                    }`}
+                  />
+                </button>
+
+                <span className="text-xs font-medium text-gray-600 w-8">
+                  {isNewPatient ? "Yes" : "No"}
+                </span>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-1.5 flex-1">
+              <label className="text-xs font-bold text-gray-700">
+                Appointment Reason:
+              </label>
+              <input
+                type="text"
+                value={reason}
+                onChange={(e) => setReason(e.target.value)}
+                placeholder="e.g., Routine checkup, follow-up, test results..."
+                className="w-full border border-gray-200 rounded-lg px-3 h-9 text-xs focus:outline-none focus:border-slate-400 bg-white placeholder-gray-400 shadow-sm"
+              />
+            </div>
+          </div>
 
           {/* Field 2: Medical Specialist - Read Only Block */}
           <div>
