@@ -18,6 +18,7 @@ export function useSearchPatients(clinicId: string, input: string, selectedPatie
   );
 
   useEffect(() => {
+    console.log("selectedPatient", selectedPatient);
     if (selectedPatient) {
       debouncedFetch.cancel();
       return;

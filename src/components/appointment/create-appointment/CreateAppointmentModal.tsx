@@ -47,6 +47,12 @@ export default function CreateAppointmentModal({
 
   const [createAppointment, { loading, error }] = useMutation(CREATE_APPOINTMENT_QUERY);
 
+  const handleOnCloseModal = (e: any) => {
+    e.stopPropagation()
+    setSelectedPatient(null);
+    onClose();
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -54,7 +60,7 @@ export default function CreateAppointmentModal({
         const newlyCreatedAppointment = await createAppointment({
           variables: {
             input: {
-              clinicId,
+              activeClinicId: clinicId,
               doctorId: selectedDoctor?.userId,
               startTime: selectedTime?.start.timestamp,
               endTime: selectedTime?.end.timestamp,
@@ -94,7 +100,7 @@ export default function CreateAppointmentModal({
             <h3 className="text-xl font-bold text-gray-900">New Appointment</h3>
           </div>
           <button
-            onClick={onClose}
+            onClick={handleOnCloseModal}
             className="rounded-lg p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors"
           >
             ✕
@@ -217,7 +223,7 @@ export default function CreateAppointmentModal({
           <div className="flex justify-end gap-3 border-t border-gray-100 pt-4 mt-6">
             <button
               type="button"
-              onClick={onClose}
+              onClick={handleOnCloseModal}
               className="rounded-xl border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer"
             >
               Cancel
