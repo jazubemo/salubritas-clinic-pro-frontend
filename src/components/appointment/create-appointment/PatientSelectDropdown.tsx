@@ -66,11 +66,11 @@ export default function PatientSelectDropdown({
         <input
           type="text"
           required
-          placeholder="Type patient's name..."
+          placeholder="Search patient by name or DNI (min. 3 characters)..."
           value={patientSearch}
           onChange={(e) => handleInputChange(e.target.value)}
           onFocus={() => {
-            if (patientSearch.trim().length >= 1) {
+            if (patientSearch.trim().length >= 3) {
               setIsDropdownOpen(true);
             }
           }}
