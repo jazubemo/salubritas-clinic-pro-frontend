@@ -1,10 +1,8 @@
 "use client";
 
-import { MINUTES_IN_AN_HOUR } from "@/common/constants/time";
-import { useAppointments } from "@/hooks/useAppointments";
 import { useCalendar } from "@/hooks/useCalendar";
 import { useDoctors } from "@/hooks/useDoctors";
-import { useSearchPatients } from "@/hooks/useSearchPatients";
+
 import { CalendarPlus } from "lucide-react";
 import React, { useState, useEffect } from "react";
 import PatientSelectDropdown from "./PatientSelectDropdown";
@@ -42,7 +40,6 @@ export default function CreateAppointmentModal({
 
   //const [createAppointment, { loading, error }] = useMutation(CREATE_APPOINTMENT);
 
-  // 3. Dispatch Form Submit payload to GraphQL Backend
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log('selectedPatient', selectedPatient);
@@ -63,7 +60,7 @@ export default function CreateAppointmentModal({
       //       }
       //     }
       //   });
-      onClose(); // Close modal upon successful completion
+      onClose();
     } catch (err) {
       console.error("Failed to create appointment:", err);
     }
@@ -83,7 +80,6 @@ export default function CreateAppointmentModal({
         {/* Header */}
         <div className="flex items-center justify-between border-b border-gray-100 pb-4">
           <div className="flex items-center gap-3">
-            {/* Soft Boxed Medical Teal Container */}
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-transparent text-blue border border-teal-100/40 shadow-sm">
               <CalendarPlus size={20} strokeWidth={2.25} />
             </div>
@@ -173,14 +169,14 @@ export default function CreateAppointmentModal({
             <button
               type="button"
               onClick={onClose}
-              className="rounded-xl border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+              className="rounded-xl border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={enableButton}
-              className="rounded-xl bg-slate-950 px-5 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed transition-all shadow-sm hover:shadow cursor-pointer"
+              className="rounded-xl bg-slate-950 px-5 py-2 text-sm font-medium text-white hover:bg-gray-800 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed transition-all shadow-sm hover:shadow cursor-pointer"
             >
               Save Appointment
             </button>
