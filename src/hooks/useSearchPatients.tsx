@@ -1,32 +1,40 @@
-import { useState, useEffect } from "react";
 import { SEARCH_PATIENTS_QUERY } from "@/graphql/queries/searchPatients";
-import { useQuery } from "@apollo/client/react";
+import { useLazyQuery } from "@apollo/client/react";
+import { useEffect, useMemo } from "react";
+import debounce from 'lodash.debounce';
+import { User } from "firebase/auth";
 
-export function useSearchPatients(clinicId: string, query: string) {
-  const trimmedQuery = query.trim();
-  
-  const [debouncedQuery, setDebouncedQuery] = useState("");
+export function useSearchPatients(clinicId: string, input: string, selectedPatient: Partial<User> | null) {
+  const [getPatients, { loading, data, error }] = useLazyQuery(
+    SEARCH_PATIENTS_QUERY,
+  );
+
+  const debouncedFetch = useMemo(
+    () =>
+      debounce((searchTerm: string) => {
+        getPatients({ variables: { activeClinicId: clinicId, query: searchTerm } });
+      }, 300),
+    [getPatients, clinicId],
+  );
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedQuery(trimmedQuery);
-    }, 500);
+    if (selectedPatient) {
+      debouncedFetch.cancel();
+      return;
+    }
 
-    return () => clearTimeout(timer);
-  }, [trimmedQuery]);
+    const trimmedInput = input.trim();
+    if (trimmedInput.length >= 2) {
+      debouncedFetch(trimmedInput);
+    }
 
-  const { loading, data, error } = useQuery(SEARCH_PATIENTS_QUERY, {
-    variables: { query: debouncedQuery, activeClinicId: clinicId },
-    skip: debouncedQuery.length < 3,
-  });
+    return () => debouncedFetch.cancel();
+  }, [input, debouncedFetch]);
 
-  const patients = data?.searchPatients || [];
-
-  return { 
-    loading, 
-    error, 
-    patients,
-    isDebouncing: trimmedQuery !== debouncedQuery 
+  return {
+    loading,
+    error,
+    patients: data?.searchPatients || [],
   };
 }
 
