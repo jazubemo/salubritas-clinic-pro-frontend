@@ -2,16 +2,13 @@ import { ONE_HOUR_IN_MILLISECONDS } from "@/common/constants/time";
 import { DEFAULT_APP_TIMEZONE } from "@/common/constants/timezone";
 import { ActiveViewRange } from "@/components/appointment/interfaces/ActiveViewRange";
 import { CalendarViewType } from "@/components/appointment/interfaces/CalendarViewType";
-import { CalendarContext } from "@/context/CalendarContext";
+import { AppointmentTime, CalendarContext } from "@/context/CalendarContext";
 
-import { DateSelectArg, DatesSetArg } from "@fullcalendar/core/index.js";
+import { DateSelectArg } from "@fullcalendar/core/index.js";
 import { DateTime } from "luxon";
 
 import {
-  createContext,
   useState,
-  Dispatch,
-  SetStateAction,
   ReactNode,
 } from "react";
 import { toast } from "sonner";
@@ -40,8 +37,7 @@ export function CalendarProvider({ children }: CalendarProviderProps) {
 
   const [showCreateAppointment, setShowCreateAppointment ] = useState(false);
 
-  const [selectedStartTime, setSelectedStartTime] = useState<string>("");
-  const [selectedEndTime, setSelectedEndTime] = useState<string>("");
+  const [selectedTime, setSelectedTime] = useState<AppointmentTime>();
 
   const closeCreateAppointment = () => {
     setShowCreateAppointment (false);
@@ -82,32 +78,17 @@ export function CalendarProvider({ children }: CalendarProviderProps) {
     const exactStartTime = DateTime.fromISO(rawStart).toFormat("h:mm a"); // "4:00 PM"
     const exactEndTime = DateTime.fromISO(rawEnd).toFormat("h:mm a");
 
-    setSelectedStartTime(exactStartTime);
-    setSelectedEndTime(exactEndTime);
+    setSelectedTime({
+      start: {
+        human: exactStartTime,
+        timestamp: rawStart
+      },
+      end: {
+        human: exactEndTime,
+        timestamp: rawEnd,
+      }
+    });
     setShowCreateAppointment (true);
-
-    // if (patientName) {
-    //   const newAppointment: AppointmentEvent = {
-    //     id: crypto.randomUUID(),
-    //     _id: crypto.randomUUID(),
-    //     title: patientName,
-    //     start: selectInfo.startStr,
-    //     end: selectInfo.endStr,
-    //     clinicId: clinicId,
-    //     startTime: selectInfo.startStr, // e.g., "2026-06-21T10:00:00"
-    //     endTime: selectInfo.endStr, // e.g., "2026-06-21T11:00:00"
-    //     status: "PENDING",
-    //     isNewPatient: false,
-    //     reason: "Routine Checkup",
-    //     patientId: "6a30562acbc138294d977b46",
-    //     patientName: "Henry Altman",
-    //     doctorId: "6a3054facbc138294d977b30",
-    //     doctorName: "Miranda Bailey",
-    //     backgroundColor: confirmedAppointmentColor,
-    //   };
-
-    //   setAppointments((prev) => [...prev, newAppointment]);
-    // }
   };
 
   return (
@@ -118,8 +99,7 @@ export function CalendarProvider({ children }: CalendarProviderProps) {
         currentView,
         showCreateAppointment,
         closeCreateAppointment,
-        selectedStartTime,
-        selectedEndTime,
+        selectedTime,
         handleDatesSet
       }}
     >

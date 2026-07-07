@@ -12,6 +12,7 @@ export function useSearchPatients(clinicId: string, input: string, selectedPatie
   const debouncedFetch = useMemo(
     () =>
       debounce((searchTerm: string) => {
+        console.log("searchTerm", searchTerm);
         getPatients({ variables: { activeClinicId: clinicId, query: searchTerm } });
       }, 300),
     [getPatients, clinicId],
@@ -24,7 +25,7 @@ export function useSearchPatients(clinicId: string, input: string, selectedPatie
     }
 
     const trimmedInput = input.trim();
-    if (trimmedInput.length >= 2) {
+    if (trimmedInput.length >= 1) {
       debouncedFetch(trimmedInput);
     }
 

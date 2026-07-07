@@ -31,21 +31,25 @@ export default function CreateAppointmentModal({
   );
   const [status, setStatus] = useState(APPOINTMENT_STATUS_MAP.PENDING);
 
-  const { selectedStartTime, selectedEndTime } = useCalendar();
+  const { selectedTime } = useCalendar();
   const { selectedDoctor } = useDoctors();
+
+  const enableButton =
+    !selectedDoctor?.userId ||
+    !selectedTime?.start ||
+    !selectedTime.end ||
+    !selectedPatient;
 
   //const [createAppointment, { loading, error }] = useMutation(CREATE_APPOINTMENT);
 
   // 3. Dispatch Form Submit payload to GraphQL Backend
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (
-      !selectedDoctor?.userId ||
-      !selectedStartTime ||
-      !selectedEndTime ||
-      !selectedPatient
-    )
-      return;
+    console.log('selectedPatient', selectedPatient);
+    console.log('selectedDoctor', selectedDoctor);
+    console.log('selectedStartTime', selectedTime?.start);
+    console.log('selectedEndTime', selectedTime?.end);
+    console.log('appointment status', status.toUpperCase());
 
     try {
       //   await createAppointment({
@@ -95,7 +99,11 @@ export default function CreateAppointmentModal({
 
         <form onSubmit={handleSubmit} className="mt-5 space-y-5">
           {/* Field 1: Patient Selection */}
-          <PatientSelectDropdown clinicId={clinicId} selectedPatient={selectedPatient} setSelectedPatient={setSelectedPatient} />
+          <PatientSelectDropdown
+            clinicId={clinicId}
+            selectedPatient={selectedPatient}
+            setSelectedPatient={setSelectedPatient}
+          />
 
           {/* Field 2: Medical Specialist - Read Only Block */}
           <div>
@@ -114,11 +122,11 @@ export default function CreateAppointmentModal({
             </span>
             <div className="flex items-center gap-1.5 text-sm font-semibold">
               <span className="inline-flex items-center rounded-md bg-emerald-50 px-2.5 py-1 text-emerald-700 border border-emerald-100/40">
-                {selectedStartTime || "3:00 PM"}
+                {selectedTime?.start.human}
               </span>
               <span className="text-gray-300 font-normal mx-0.5">→</span>
               <span className="inline-flex items-center rounded-md bg-amber-50 px-2.5 py-1 text-amber-700 border border-amber-100/40">
-                {selectedEndTime || "3:30 PM"}
+                {selectedTime?.end.human}
               </span>
             </div>
           </div>
@@ -171,8 +179,8 @@ export default function CreateAppointmentModal({
             </button>
             <button
               type="submit"
-              disabled={!selectedStartTime || !selectedEndTime}
-              className="rounded-xl bg-slate-950 px-5 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed transition-all shadow-sm hover:shadow"
+              disabled={enableButton}
+              className="rounded-xl bg-slate-950 px-5 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed transition-all shadow-sm hover:shadow cursor-pointer"
             >
               Save Appointment
             </button>

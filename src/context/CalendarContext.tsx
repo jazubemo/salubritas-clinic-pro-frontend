@@ -8,14 +8,24 @@ import {
   SetStateAction,
 } from "react";
 
+export interface AppointmentTime {
+  start: {
+    human: string;
+    timestamp: string;
+  };
+  end: {
+    human: string;
+    timestamp: string;
+  }
+}
+
 interface CalendarContextType {
   handleTimeSlotSelect: (selectInfo: DateSelectArg) => void;
   setCurrentView: Dispatch<SetStateAction<ActiveViewRange>>;
   currentView: ActiveViewRange;
   showCreateAppointment: boolean;
   closeCreateAppointment: () => void;
-  selectedStartTime: string;
-  selectedEndTime: string;
+  selectedTime: AppointmentTime | undefined;
   handleDatesSet: (arg: DatesSetArg) => void
 }
 

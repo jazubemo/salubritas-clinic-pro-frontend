@@ -70,7 +70,7 @@ export default function PatientSelectDropdown({
           value={patientSearch}
           onChange={(e) => handleInputChange(e.target.value)}
           onFocus={() => {
-            if (patientSearch.trim().length >= 2) {
+            if (patientSearch.trim().length >= 1) {
               setIsDropdownOpen(true);
             }
           }}
