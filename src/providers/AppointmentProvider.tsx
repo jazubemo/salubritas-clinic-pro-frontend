@@ -105,7 +105,7 @@ export function AppointmentProvider({
     };
   }, [currentView, clinicId, selectedDoctor]);
 
-  const addAppointment = (newAppointment: AppointmentEvent) => {
+  const addAppointment = (newAppointment: Appointment) => {
     setAppointments((prevAppointments) => [
       ...prevAppointments,
       mapAppointmentToEvent(newAppointment),

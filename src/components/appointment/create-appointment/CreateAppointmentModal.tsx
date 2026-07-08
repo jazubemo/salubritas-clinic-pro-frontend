@@ -59,7 +59,7 @@ export default function CreateAppointmentModal({
     e.preventDefault();
 
     try {
-      const newlyCreatedAppointment = await createAppointment({
+      const { data } = await createAppointment({
         variables: {
           activeClinicId: clinicId,
           createAppointmentInput: {
@@ -74,6 +74,10 @@ export default function CreateAppointmentModal({
           },
         },
       });
+
+      // update UI
+      const newAppointment = data?.createAppointment;
+      addAppointment(newAppointment);
       onClose();
       toast.success("Success", {
         description: "You've successfully created this appointment.",
