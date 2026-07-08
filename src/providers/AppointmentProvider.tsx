@@ -36,10 +36,8 @@ export function AppointmentProvider({
 
   const [triggerFetchAppointmentsQuery] = useLazyQuery(AppointmentsQuery);
 
-  const mapAppointmentsToEvents = (
-    appointments: Appointment[],
-  ): AppointmentEvent[] => {
-    return appointments.map((appointment) => ({
+  const mapAppointmentToEvent = (appointment: Appointment) => {
+    return {
       id: appointment._id,
       title: appointment.patientName,
       start: formatToAppTimezone(appointment.startTime),
@@ -50,7 +48,15 @@ export function AppointmentProvider({
           : confirmedAppointmentColor,
       overlap: false,
       ...appointment,
-    }));
+    };
+  };
+
+  const mapAppointmentsToEvents = (
+    appointments: Appointment[],
+  ): AppointmentEvent[] => {
+    return appointments.map((appointment) =>
+      mapAppointmentToEvent(appointment),
+    );
   };
 
   const buildQueryVariables = (startRange: string, endRange: string) => {
@@ -102,7 +108,7 @@ export function AppointmentProvider({
   const addAppointment = (newAppointment: AppointmentEvent) => {
     setAppointments((prevAppointments) => [
       ...prevAppointments,
-      newAppointment,
+      mapAppointmentToEvent(newAppointment),
     ]);
   };
 
