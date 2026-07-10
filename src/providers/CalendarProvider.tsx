@@ -8,7 +8,7 @@ import { AppointmentTime, CalendarContext } from "@/context/CalendarContext";
 import { DateSelectArg, EventClickArg } from "@fullcalendar/core/index.js";
 import { DateTime } from "luxon";
 
-import { useState, ReactNode } from "react";
+import { useState, ReactNode, useEffect } from "react";
 import { toast } from "sonner";
 
 interface CalendarProviderProps {
@@ -99,6 +99,20 @@ export function CalendarProvider({ children }: CalendarProviderProps) {
     });
     setShowCreateAppointment(true);
   };
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (selectedEvent) {
+        closePopover();
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, true);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll, true);
+    };
+  }, [selectedEvent]);
 
   const handleEventClick = (clickInfo: EventClickArg) => {
     console.log("handleEventClick");
