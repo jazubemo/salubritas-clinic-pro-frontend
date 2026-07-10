@@ -7,12 +7,14 @@ interface AppointmentPopoverCardProps {
   selectedEvent: AppointmentEvent;
   popoverPosition: { top: number; left: number };
   onClose: () => void;
+  onRemove: (id: string) => Promise<void>;
 }
 
 export default function AppointmentPopoverCard({
   selectedEvent,
   popoverPosition,
   onClose,
+  onRemove,
 }: AppointmentPopoverCardProps) {
   return (
     <div 
@@ -49,7 +51,7 @@ export default function AppointmentPopoverCard({
           </button>
           
           <button 
-            onClick={() => console.log("remove")}
+            onClick={() => onRemove(selectedEvent._id)}
             title="Cancel Appointment"
             className="p-1.5 text-slate-500 hover:text-red-600 dark:text-slate-400 dark:hover:text-red-400 rounded-md hover:bg-white dark:hover:bg-slate-800 transition-all shadow-sm"
           >

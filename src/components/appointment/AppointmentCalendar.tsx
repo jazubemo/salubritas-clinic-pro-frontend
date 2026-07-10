@@ -22,7 +22,7 @@ interface AppointmentCalendarProps {
 }
 
 export default function Calendar({ clinicId }: AppointmentCalendarProps) {
-  const { appointments, loading: isLoading, error } = useAppointments();
+  const { appointments, loading: isLoading, error, removeAppointment } = useAppointments();
 
   const {
     currentView,
@@ -33,7 +33,7 @@ export default function Calendar({ clinicId }: AppointmentCalendarProps) {
     handleEventClick,
     selectedEvent,
     closePopover,
-    popoverPosition
+    popoverPosition,
   } = useCalendar();
 
   const calendarRef = useRef<FullCalendar>(null);
@@ -119,6 +119,7 @@ export default function Calendar({ clinicId }: AppointmentCalendarProps) {
             selectedEvent={selectedEvent}
             onClose={closePopover}
             popoverPosition={popoverPosition}
+            onRemove={removeAppointment}
           />
         )}
       </div>

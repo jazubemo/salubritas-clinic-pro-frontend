@@ -18,20 +18,24 @@ type Props = {
 function AppointmentsPage({ params }: Props) {
   const { clinicId } = use(params);
 
-  const currentClinic = useSelector((state) => selectClinicByParamsId(state, clinicId));
+  const currentClinic = useSelector((state) =>
+    selectClinicByParamsId(state, clinicId),
+  );
 
   return (
     <div className="w-full h-full flex flex-col overflow-hidden">
-      <CalendarProvider>
-      <DoctorProvider clinicId={clinicId}>
-        {currentClinic?.roles.includes("ADMIN") ? <DoctorFilterDropdown />: null}
+      <CalendarProvider clinicId={clinicId}>
+        <DoctorProvider clinicId={clinicId}>
+          {currentClinic?.roles.includes("ADMIN") ? (
+            <DoctorFilterDropdown />
+          ) : null}
 
-        <div className="relative flex-1 w-full min-h-0 bg-white overflow-hidden">
-          <AppointmentProvider clinicId={clinicId}>
-            <AppointmentCalendar clinicId={clinicId} />
-          </AppointmentProvider>
-        </div>
-      </DoctorProvider>
+          <div className="relative flex-1 w-full min-h-0 bg-white overflow-hidden">
+            <AppointmentProvider clinicId={clinicId}>
+              <AppointmentCalendar clinicId={clinicId} />
+            </AppointmentProvider>
+          </div>
+        </DoctorProvider>
       </CalendarProvider>
     </div>
   );

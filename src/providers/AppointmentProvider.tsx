@@ -2,7 +2,7 @@ import { Appointment } from "@/__generated__/graphql";
 import { formatToAppTimezone } from "@/common/timezone/formatToAppTimezone";
 import { AppointmentEvent } from "@/common/types/AppointmentEvent";
 import { AppointmentsQuery } from "@/graphql/queries/appointments";
-import { useLazyQuery } from "@apollo/client/react";
+import { useLazyQuery, useMutation } from "@apollo/client/react";
 
 import { useState, useEffect, ReactNode } from "react";
 import { selectClinicByParamsId } from "@/lib/features/auth/authSelectors";
@@ -11,6 +11,8 @@ import { useAppSelector } from "@/lib/store";
 import { useDoctors } from "@/hooks/useDoctors";
 import { useCalendar } from "@/hooks/useCalendar";
 import { AppointmentContext } from "@/context/AppointmentContext";
+import { toast } from "sonner";
+import { UPDATE_APPOINTMENT_QUERY } from "@/graphql/mutations/update-appointment";
 
 interface AppointmentProviderProps {
   children: ReactNode;
@@ -31,10 +33,14 @@ export function AppointmentProvider({
     selectClinicByParamsId(state, clinicId),
   );
   const { user } = useAppSelector((state) => state.auth);
-  const { currentView } = useCalendar();
+  const { currentView, closePopover } = useCalendar();
   const { selectedDoctor } = useDoctors();
 
   const [triggerFetchAppointmentsQuery] = useLazyQuery(AppointmentsQuery);
+
+  const [triggerUpdateAppointment, { loading: isRemovingAppointment, error }] = useMutation(
+    UPDATE_APPOINTMENT_QUERY,
+  );
 
   const mapAppointmentToEvent = (appointment: Appointment) => {
     return {
@@ -112,12 +118,44 @@ export function AppointmentProvider({
     ]);
   };
 
+  const removeLocalAppointment = (id: string) => {
+    const filterAppointments = appointments.filter(
+      (appointment) => appointment._id !== id,
+    );
+    setAppointments(filterAppointments);
+  };
+
+  const handleRemoveAppointment = async (id: string) => {
+    try {
+      await triggerUpdateAppointment({
+        variables: {
+          activeClinicId: clinicId,
+          updateAppointmentId: id,
+          updateAppointmentInput: {
+            status: "CANCELLED",
+          },
+        },
+      });
+      removeLocalAppointment(id);
+      closePopover();
+      toast.success("Success", {
+        description: "You've successfully removed this appointment.",
+      });
+    } catch (error) {
+      toast.error("Error", {
+        description:
+          "Something went wrong while trying to remove this appointment.",
+      });
+    }
+  };
+
   return (
     <AppointmentContext
       value={{
         appointments,
         loading,
         addAppointment,
+        removeAppointment: handleRemoveAppointment,
       }}
     >
       {children}

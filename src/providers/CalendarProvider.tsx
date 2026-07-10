@@ -4,6 +4,9 @@ import { AppointmentEvent } from "@/common/types/AppointmentEvent";
 import { ActiveViewRange } from "@/components/appointment/interfaces/ActiveViewRange";
 import { CalendarViewType } from "@/components/appointment/interfaces/CalendarViewType";
 import { AppointmentTime, CalendarContext } from "@/context/CalendarContext";
+import { UPDATE_APPOINTMENT_QUERY } from "@/graphql/mutations/update-appointment";
+import { useAppointments } from "@/hooks/useAppointments";
+import { useMutation } from "@apollo/client/react";
 
 import { DateSelectArg, EventClickArg } from "@fullcalendar/core/index.js";
 import { DateTime } from "luxon";
@@ -13,6 +16,7 @@ import { toast } from "sonner";
 
 interface CalendarProviderProps {
   children: ReactNode;
+  clinicId: string;
 }
 
 const CALENDAR_VIEW_MAP: Record<string, CalendarViewType> = {
@@ -22,7 +26,10 @@ const CALENDAR_VIEW_MAP: Record<string, CalendarViewType> = {
   timeGridDay: "day",
 };
 
-export function CalendarProvider({ children }: CalendarProviderProps) {
+export function CalendarProvider({
+  children,
+  clinicId,
+}: CalendarProviderProps) {
   const [currentView, setCurrentView] = useState<ActiveViewRange>(() => {
     const nowLocal = DateTime.now().setZone(DEFAULT_APP_TIMEZONE);
 
@@ -32,6 +39,10 @@ export function CalendarProvider({ children }: CalendarProviderProps) {
       type: "day",
     };
   });
+
+  const [updateAppointment, { loading, error }] = useMutation(
+    UPDATE_APPOINTMENT_QUERY,
+  );
 
   const [showCreateAppointment, setShowCreateAppointment] = useState(false);
 
@@ -48,6 +59,10 @@ export function CalendarProvider({ children }: CalendarProviderProps) {
 
   const closeCreateAppointment = () => {
     setShowCreateAppointment(false);
+  };
+
+  const closePopover = () => {
+    setSelectedEvent(null);
   };
 
   const handleDatesSet = (arg: any) => {
@@ -155,10 +170,6 @@ export function CalendarProvider({ children }: CalendarProviderProps) {
         ), // Offset slightly right
       });
     }
-  };
-
-  const closePopover = () => {
-    setSelectedEvent(null);
   };
 
   return (
