@@ -1,16 +1,14 @@
 import { ONE_HOUR_IN_MILLISECONDS } from "@/common/constants/time";
 import { DEFAULT_APP_TIMEZONE } from "@/common/constants/timezone";
+import { AppointmentEvent } from "@/common/types/AppointmentEvent";
 import { ActiveViewRange } from "@/components/appointment/interfaces/ActiveViewRange";
 import { CalendarViewType } from "@/components/appointment/interfaces/CalendarViewType";
 import { AppointmentTime, CalendarContext } from "@/context/CalendarContext";
 
-import { DateSelectArg } from "@fullcalendar/core/index.js";
+import { DateSelectArg, EventClickArg } from "@fullcalendar/core/index.js";
 import { DateTime } from "luxon";
 
-import {
-  useState,
-  ReactNode,
-} from "react";
+import { useState, ReactNode } from "react";
 import { toast } from "sonner";
 
 interface CalendarProviderProps {
@@ -35,12 +33,21 @@ export function CalendarProvider({ children }: CalendarProviderProps) {
     };
   });
 
-  const [showCreateAppointment, setShowCreateAppointment ] = useState(false);
+  const [showCreateAppointment, setShowCreateAppointment] = useState(false);
 
   const [selectedTime, setSelectedTime] = useState<AppointmentTime>();
 
+  const [selectedEvent, setSelectedEvent] = useState<AppointmentEvent | null>(
+    null,
+  );
+
+  const [popoverPosition, setPopoverPosition] = useState<{
+    top: number;
+    left: number;
+  } | null>(null);
+
   const closeCreateAppointment = () => {
-    setShowCreateAppointment (false);
+    setShowCreateAppointment(false);
   };
 
   const handleDatesSet = (arg: any) => {
@@ -55,6 +62,8 @@ export function CalendarProvider({ children }: CalendarProviderProps) {
       end: viewEnd,
       type: simplifiedView,
     });
+
+    closePopover();
   };
 
   const handleTimeSlotSelect = (selectInfo: DateSelectArg) => {
@@ -81,14 +90,61 @@ export function CalendarProvider({ children }: CalendarProviderProps) {
     setSelectedTime({
       start: {
         human: exactStartTime,
-        timestamp: rawStart
+        timestamp: rawStart,
       },
       end: {
         human: exactEndTime,
         timestamp: rawEnd,
-      }
+      },
     });
-    setShowCreateAppointment (true);
+    setShowCreateAppointment(true);
+  };
+
+  const handleEventClick = (clickInfo: EventClickArg) => {
+    console.log("handleEventClick");
+    clickInfo.jsEvent.preventDefault();
+    const props = clickInfo.event.extendedProps;
+
+    setSelectedEvent({
+      _id: clickInfo.event.id,
+      id: clickInfo.event.id,
+      title: props.title,
+      clinicId: props.clinicId,
+      start: props.start,
+      end: props.end,
+      patientId: props.patientId,
+      patientName: props.patientName,
+      doctorId: props.doctorId,
+      isNewPatient: props.isNewPatient || false,
+      doctorName: props.doctorName,
+      startTime: clickInfo.event.start?.toISOString() || "",
+      endTime: clickInfo.event.end?.toISOString() || "",
+      status: props.status,
+      reason: props.reason,
+    });
+
+    // Get mouse coordinates relative to the viewport window
+    const mouseX = clickInfo.jsEvent.clientX;
+    const mouseY = clickInfo.jsEvent.clientY;
+
+    // Find the closest relative parent node box wrapper container boundary
+    const calendarContainer = clickInfo.el.closest(".relative");
+    const containerRect = calendarContainer?.getBoundingClientRect();
+
+    if (containerRect) {
+      // Calculate precise coordinates relative to your parent calendar container
+      setPopoverPosition({
+        top: mouseY - containerRect.top - 80, // Offset vertically to sit elegantly above/near the mouse click
+        left: Math.min(
+          mouseX - containerRect.left + 20,
+          window.innerWidth - 360,
+        ), // Offset slightly right
+      });
+    }
+  };
+
+  const closePopover = () => {
+    setSelectedEvent(null);
   };
 
   return (
@@ -100,7 +156,11 @@ export function CalendarProvider({ children }: CalendarProviderProps) {
         showCreateAppointment,
         closeCreateAppointment,
         selectedTime,
-        handleDatesSet
+        handleDatesSet,
+        handleEventClick,
+        selectedEvent,
+        closePopover,
+        popoverPosition,
       }}
     >
       {children}

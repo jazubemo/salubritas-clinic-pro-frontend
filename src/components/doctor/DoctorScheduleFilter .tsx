@@ -1,6 +1,7 @@
 import { useDoctors } from "@/hooks/useDoctors";
 import React, { useState } from "react";
 import { DoctorDropdownSkeleton } from "./DoctorDropdownSkeleton";
+import { useCalendar } from "@/hooks/useCalendar";
 
 export default function DoctorScheduleFilter() {
   const [isOpen, setIsOpen] = useState(false);
@@ -12,9 +13,12 @@ export default function DoctorScheduleFilter() {
     loading: isLoading,
   } = useDoctors();
 
+  const { closePopover } = useCalendar();
+
   const handleOnDoctorChange = (doctor) => {
     setSelectedDoctor(doctor);
     setIsOpen(false);
+    closePopover();
   };
 
   return (

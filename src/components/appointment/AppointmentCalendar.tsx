@@ -15,6 +15,7 @@ import CalendarSkeleton from "./CalendarSkeleton";
 import CreateAppointmentModal from "./create-appointment/CreateAppointmentModal";
 import { useCalendar } from "@/hooks/useCalendar";
 import { createSelectAllowValidator } from "@/lib/utils/createSelectAllowValidator";
+import AppointmentPopoverCard from "./view-appointment/AppointmentPopoverCard";
 
 interface AppointmentCalendarProps {
   clinicId: string;
@@ -29,6 +30,10 @@ export default function Calendar({ clinicId }: AppointmentCalendarProps) {
     handleDatesSet,
     showCreateAppointment,
     closeCreateAppointment,
+    handleEventClick,
+    selectedEvent,
+    closePopover,
+    popoverPosition
   } = useCalendar();
 
   const calendarRef = useRef<FullCalendar>(null);
@@ -98,16 +103,24 @@ export default function Calendar({ clinicId }: AppointmentCalendarProps) {
             handleTimeSlotSelect(selectInfo)
           }
           datesSet={handleDatesSet}
-
           // avoid overlapping
           eventOverlap={false}
           selectAllow={createSelectAllowValidator(appointments)}
+          // visualize events
+          eventClick={handleEventClick}
         />
         <CreateAppointmentModal
           isOpen={showCreateAppointment}
           onClose={closeCreateAppointment}
           clinicId={clinicId}
         />
+        {selectedEvent && popoverPosition && (
+          <AppointmentPopoverCard
+            selectedEvent={selectedEvent}
+            onClose={closePopover}
+            popoverPosition={popoverPosition}
+          />
+        )}
       </div>
     </div>
   );

@@ -22,17 +22,17 @@ function AppointmentsPage({ params }: Props) {
 
   return (
     <div className="w-full h-full flex flex-col overflow-hidden">
+      <CalendarProvider>
       <DoctorProvider clinicId={clinicId}>
         {currentClinic?.roles.includes("ADMIN") ? <DoctorFilterDropdown />: null}
 
         <div className="relative flex-1 w-full min-h-0 bg-white overflow-hidden">
-          <CalendarProvider>
           <AppointmentProvider clinicId={clinicId}>
             <AppointmentCalendar clinicId={clinicId} />
           </AppointmentProvider>
-          </CalendarProvider>
         </div>
       </DoctorProvider>
+      </CalendarProvider>
     </div>
   );
 }
