@@ -9,6 +9,7 @@ interface AppointmentContextType {
   loading: boolean;
   addAppointment: (newAppointment: AppointmentEvent) => void;
   removeAppointment: (id: string) => Promise<void>;
+  isRemovingAppointment: boolean;
 }
 
 export const AppointmentContext = createContext<AppointmentContextType | null>(

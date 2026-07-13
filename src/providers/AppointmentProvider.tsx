@@ -156,6 +156,7 @@ export function AppointmentProvider({
         loading,
         addAppointment,
         removeAppointment: handleRemoveAppointment,
+        isRemovingAppointment,
       }}
     >
       {children}
