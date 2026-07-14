@@ -1,32 +1,29 @@
 "use client";
 
 import React, { useMemo, useRef } from "react";
+import { useAppointments } from "@/hooks/useAppointments";
+import { useCalendar } from "@/hooks/useCalendar";
+
+import { createSelectAllowValidator } from "@/lib/utils/createSelectAllowValidator";
+import { DEFAULT_APP_TIMEZONE } from "@/common/constants/timezone";
+
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import multiMonthPlugin from "@fullcalendar/multimonth";
 import interactionPlugin from "@fullcalendar/interaction";
-
 import { DateSelectArg } from "@fullcalendar/core/index.js";
-import { useAppointments } from "@/hooks/useAppointments";
-import { DEFAULT_APP_TIMEZONE } from "@/common/constants/timezone";
-import CalendarSkeleton from "./CalendarSkeleton";
 
 import CreateAppointmentModal from "./create-appointment/CreateAppointmentModal";
-import { useCalendar } from "@/hooks/useCalendar";
-import { createSelectAllowValidator } from "@/lib/utils/createSelectAllowValidator";
 import AppointmentPopoverCard from "./view-appointment/AppointmentPopoverCard";
+import CalendarSkeleton from "./CalendarSkeleton";
 
 interface AppointmentCalendarProps {
   clinicId: string;
 }
 
 export default function Calendar({ clinicId }: AppointmentCalendarProps) {
-  const {
-    appointments,
-    loading: isLoading,
-    error,
-  } = useAppointments();
+  const { appointments, loading: isLoading, error } = useAppointments();
 
   const {
     currentView,
@@ -68,8 +65,6 @@ export default function Calendar({ clinicId }: AppointmentCalendarProps) {
             multiMonthPlugin,
             interactionPlugin,
           ]}
-          initialView="timeGridDay"
-          height="100%"
           headerToolbar={{
             left: "prev,next today",
             center: "title",
@@ -88,22 +83,24 @@ export default function Calendar({ clinicId }: AppointmentCalendarProps) {
             meridiem: "short",
             hour12: true,
           }}
+          initialView="timeGridDay"
+          height="100%"
+          timeZone={DEFAULT_APP_TIMEZONE}
           weekends={true}
           slotMinTime="08:00:00"
           slotMaxTime="16:30:00"
-          handleWindowResize={true}
           slotDuration="00:15:00"
           allDaySlot={false}
-          events={appointments}
+          handleWindowResize={true}
           nowIndicator={true}
           scrollTime={currentTimeOneHourAgoFormatted}
           scrollTimeReset={false}
-          timeZone={DEFAULT_APP_TIMEZONE}
           selectable={true}
           select={(selectInfo: DateSelectArg) =>
             handleTimeSlotSelect(selectInfo)
           }
           datesSet={handleDatesSet}
+          events={appointments}
           // avoid overlapping
           eventOverlap={false}
           selectAllow={createSelectAllowValidator(appointments)}

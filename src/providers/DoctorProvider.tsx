@@ -31,7 +31,7 @@ export function DoctorProvider({ children, clinicId }: DoctorProviderProps) {
 
     return users.map((user) => ({
       userId: user?._id,
-      fullName: `Dr. ${user?.firstName} ${user?.lastName}`,
+      fullName: `Dr. ${user?.fullName}`,
       specialty: user?.doctorProfile?.specialty
         ? DOCTOR_SPECIALTY_MAP[user?.doctorProfile?.specialty]
         : "General Physician",

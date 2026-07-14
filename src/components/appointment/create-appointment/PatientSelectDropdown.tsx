@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, Dispatch, SetStateAction } from "react";
 import { useSearchPatients } from "@/hooks/useSearchPatients";
+
 import { User } from "@/__generated__/graphql";
 
 interface PatientSelectDropdownProps {

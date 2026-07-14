@@ -48,7 +48,7 @@ const UserProfileDropdown = () => {
           <div className="px-3 py-2 border-b border-white/5 mb-1">
             <p className="text-xs text-white/40 font-medium">Signed in as</p>
             <p className="text-sm font-semibold text-white truncate">
-              {user?.firstName}
+              {user?.fullName || user?.firstName}
             </p>
             {user?.email && (
               <p className="text-xs text-white/50 truncate mt-0.5">

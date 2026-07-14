@@ -12,8 +12,6 @@ function PatientsPage({ params }: Props) {
 
   return (
     <div className="relative z-30 min-h-screen bg-white p-8 text-black">
-      <h1 className="text-2xl font-bold">Clinic ID: {clinicId}</h1>
-      <p className="mt-2 text-lg">Patient List</p>
     </div>
   );
 }

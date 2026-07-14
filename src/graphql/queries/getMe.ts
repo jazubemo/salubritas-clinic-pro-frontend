@@ -9,6 +9,7 @@ export const GET_ME = gql`
       email
       firstName
       lastName
+      fullName 
       clinicMemberships {
         name
         roles

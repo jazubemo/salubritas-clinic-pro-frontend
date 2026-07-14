@@ -7,6 +7,7 @@ export const DOCTORS_QUERY = gql`
       email
       firstName
       lastName
+      fullName
       clinicMemberships {
         shifts {
           daysOfWeek

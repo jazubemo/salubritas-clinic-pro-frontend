@@ -1,15 +1,17 @@
 "use client";
 
-import AppointmentCalendar from "@/components/appointment/AppointmentCalendar";
-import { withRoleProtection } from "@/components/common/withRoleProtection";
-import DoctorFilterDropdown from "@/components/doctor/DoctorScheduleFilter ";
-import { selectClinicByParamsId } from "@/lib/features/auth/authSelectors";
+import { use } from "react";
+import { useSelector } from "react-redux";
 
 import { AppointmentProvider } from "@/providers/AppointmentProvider";
 import { CalendarProvider } from "@/providers/CalendarProvider";
 import { DoctorProvider } from "@/providers/DoctorProvider";
-import { use } from "react";
-import { useSelector } from "react-redux";
+
+import AppointmentCalendar from "@/components/appointment/AppointmentCalendar";
+import { withRoleProtection } from "@/components/common/withRoleProtection";
+import DoctorFilterDropdown from "@/components/doctor/DoctorScheduleFilter ";
+
+import { selectClinicByParamsId } from "@/lib/features/auth/authSelectors";
 
 type Props = {
   params: Promise<{ clinicId: string }>;
