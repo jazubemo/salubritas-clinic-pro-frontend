@@ -14,12 +14,10 @@ import type { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-
  * Learn more about it here: https://the-guild.dev/graphql/codegen/plugins/presets/preset-client#reducing-bundle-size
  */
 type Documents = {
-    "\n  query GetMe {\n    getMe {\n      _id\n      authId\n      dni\n      email\n      firstName\n      lastName\n      clinicMemberships {\n        name\n        roles\n        status\n        clinicId\n      }\n    }\n  }\n": typeof types.GetMeDocument,
-    "\n  query Query($activeClinicId: String!) {\n    getUsers(activeClinicId: $activeClinicId) {\n      _id\n      authId\n      dni\n      firstName\n      lastName\n    }\n  }\n": typeof types.QueryDocument,
+    "\n  query GetMe {\n    getMe {\n      authId\n      createdAt\n      dni\n      email\n      fullName\n      doctor {\n        id\n        specialty\n      }\n      patient {\n        id\n      }\n      clinicMemberships {\n        clinicId\n        createdAt\n        id\n        name\n        roles\n        status\n        updatedAt\n      }\n    }\n  }\n": typeof types.GetMeDocument,
 };
 const documents: Documents = {
-    "\n  query GetMe {\n    getMe {\n      _id\n      authId\n      dni\n      email\n      firstName\n      lastName\n      clinicMemberships {\n        name\n        roles\n        status\n        clinicId\n      }\n    }\n  }\n": types.GetMeDocument,
-    "\n  query Query($activeClinicId: String!) {\n    getUsers(activeClinicId: $activeClinicId) {\n      _id\n      authId\n      dni\n      firstName\n      lastName\n    }\n  }\n": types.QueryDocument,
+    "\n  query GetMe {\n    getMe {\n      authId\n      createdAt\n      dni\n      email\n      fullName\n      doctor {\n        id\n        specialty\n      }\n      patient {\n        id\n      }\n      clinicMemberships {\n        clinicId\n        createdAt\n        id\n        name\n        roles\n        status\n        updatedAt\n      }\n    }\n  }\n": types.GetMeDocument,
 };
 
 /**
@@ -39,11 +37,7 @@ export function graphql(source: string): unknown;
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query GetMe {\n    getMe {\n      _id\n      authId\n      dni\n      email\n      firstName\n      lastName\n      clinicMemberships {\n        name\n        roles\n        status\n        clinicId\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetMe {\n    getMe {\n      _id\n      authId\n      dni\n      email\n      firstName\n      lastName\n      clinicMemberships {\n        name\n        roles\n        status\n        clinicId\n      }\n    }\n  }\n"];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(source: "\n  query Query($activeClinicId: String!) {\n    getUsers(activeClinicId: $activeClinicId) {\n      _id\n      authId\n      dni\n      firstName\n      lastName\n    }\n  }\n"): (typeof documents)["\n  query Query($activeClinicId: String!) {\n    getUsers(activeClinicId: $activeClinicId) {\n      _id\n      authId\n      dni\n      firstName\n      lastName\n    }\n  }\n"];
+export function graphql(source: "\n  query GetMe {\n    getMe {\n      authId\n      createdAt\n      dni\n      email\n      fullName\n      doctor {\n        id\n        specialty\n      }\n      patient {\n        id\n      }\n      clinicMemberships {\n        clinicId\n        createdAt\n        id\n        name\n        roles\n        status\n        updatedAt\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetMe {\n    getMe {\n      authId\n      createdAt\n      dni\n      email\n      fullName\n      doctor {\n        id\n        specialty\n      }\n      patient {\n        id\n      }\n      clinicMemberships {\n        clinicId\n        createdAt\n        id\n        name\n        roles\n        status\n        updatedAt\n      }\n    }\n  }\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};
