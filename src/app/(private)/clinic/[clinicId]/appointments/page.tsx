@@ -18,7 +18,8 @@ type Props = {
 };
 
 function AppointmentsPage({ params }: Props) {
-  const { clinicId } = use(params);
+  const resolvedParams = use(params);
+  const clinicId = resolvedParams.clinicId;
 
   const currentClinic = useSelector((state) =>
     selectClinicByParamsId(state, clinicId),
@@ -26,7 +27,8 @@ function AppointmentsPage({ params }: Props) {
 
   return (
     <div className="w-full h-full flex flex-col overflow-hidden">
-      <CalendarProvider clinicId={clinicId}>
+      Appointment List
+      {/* <CalendarProvider clinicId={clinicId}>
         <DoctorProvider clinicId={clinicId}>
           {currentClinic?.roles.includes("ADMIN") ? (
             <DoctorFilterDropdown />
@@ -38,7 +40,7 @@ function AppointmentsPage({ params }: Props) {
             </AppointmentProvider>
           </div>
         </DoctorProvider>
-      </CalendarProvider>
+      </CalendarProvider> */}
     </div>
   );
 }
